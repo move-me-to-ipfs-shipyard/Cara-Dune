@@ -30,12 +30,18 @@ Karga asked me to finish his mission - host Mando on his quest - i will be multi
 i am not Mando
   i lack his no-compromise firmity
   but i am his host and thus will get his reward - be a free hungry-twitch-feeding true multiplayer game
-i will be a remake-derivation
-  take an existing game or games
+i will have programming lanugage gameplay
+  editor on the left and 2D canvas on the right ot reflect the state changing
+  this is exactly the new gameplay twitch streamers and players are hungry for, can compete and streamers
+  programming lanugage is most unlimited uncapped form of creation like writing
+  i'll base the map on an episode from Mandalorian series - Siege Sanctuary Reckoning Believer Rescue
   and turn that into Top Gear interview - whole foods plant based bowl
+  i will generate state and put it into Little-Rock's channels like sequence of events
+  i will have processes of the game prewritten for other characters and map and send that generated state to them one value at a time
+  Cara-Dune's and other processes player is reponsible for will receive channels to take from and put to
+  and so the map will change and characters move - all in a sequence of steps via Little-Rocks's channels
 i will not use Conquiztador or Heroes III or games alike - a different game - as i said, i am not Mando
 i will take best from
-  _game_ - i will choose a game from twitch.tv/directory to turn free whole foods plant based desktop with light ui and p2p networking
   IPFS - run alongside IFPS node and use http-api for pubsub mutliplayer networking - Karga already gave me the datastick
   Voobly - give players ability to host and find games
   Starcraft - be a competitive game users will choose for tournaments
