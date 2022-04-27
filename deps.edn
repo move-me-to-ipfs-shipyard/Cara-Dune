@@ -12,7 +12,8 @@
                      :sha "b6a318af92e836f1f20960f38a5944168b88d60d"}
         clj-http/clj-http {:mvn/version "3.12.3"}
         cheshire/cheshire {:mvn/version "5.10.2"}
-
+        cljfmt/cljfmt {:mvn/version "0.8.0"}
+        
         com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}}
 
  :aliases

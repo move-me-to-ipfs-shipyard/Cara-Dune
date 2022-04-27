@@ -38,7 +38,8 @@
    (org.kordamp.ikonli.codicons Codicons)
    (net.miginfocom.swing MigLayout)
    (net.miginfocom.layout ConstraintParser LC UnitValue)
-
+   (java.lang Runnable)
+   
    (java.awt.image BufferedImage)
    (java.awt Image Graphics2D Color)
    (javax.imageio ImageIO)
