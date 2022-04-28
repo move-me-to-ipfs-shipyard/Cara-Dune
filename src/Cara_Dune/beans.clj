@@ -55,7 +55,7 @@
       (binding [*ns* (find-ns ns-sym)]
         (eval `(Wichita.repl/doc ~fn-name))))))
 
-(defn console-output-stream
+(defn console-output-stream ^ByteArrayOutputStream
   [{:keys [^Color text-color
            ^PrintStream print-stream
            append?
@@ -88,7 +88,6 @@
         (StyleConstants/setForeground attributes text-color))
     (proxy [ByteArrayOutputStream] []
       (flush []
-        (println :flush)
         (try
           (let [message (.toString ^ByteArrayOutputStream this)]
             (when (not= (.length message) 0)
@@ -143,14 +142,12 @@
     (.setEditable jtext-component false)
 
     (System/setOut (PrintStream.
-                    ^ByteArrayOutputStream
                     (console-output-stream {:text-color Color/BLACK
                                             :print-stream System/out
                                             :append? remove-from-start?
                                             :jtext-component jtext-component})
                     true))
     (System/setErr (PrintStream.
-                    ^ByteArrayOutputStream
                     (console-output-stream {:text-color Color/BLACK
                                             :print-stream System/err
                                             :append? remove-from-start?
@@ -187,27 +184,33 @@
       (.setHorizontalScrollBarPolicy ScrollPaneConstants/HORIZONTAL_SCROLLBAR_NEVER))
 
     (doto jrepl
-      (.addKeyListener (reify KeyListener
-                         (keyPressed
-                           [_ event]
-                           (when (= (.getKeyCode ^KeyEvent event) KeyEvent/VK_ENTER)
-                             (.consume ^KeyEvent event)))
-                         (keyReleased
-                           [_ event]
-                           (when (= (.getKeyCode ^KeyEvent event) KeyEvent/VK_ENTER)
-                             (let [string (-> (.getText jrepl) (clojure.string/trim) (clojure.string/trim-newline))]
-                               (when (not (empty? string))
-                                 (let [form (read-string string)
-                                       result (binding [*ns* *ns]
-                                                (eval form))]
-                                   (put! eval| {:form form
-                                                :result result}))
-                                 (SwingUtilities/invokeLater
-                                  (reify Runnable
-                                    (run [_]
-                                      (.setText jrepl ""))))))))
-                         (keyTyped
-                           [_ event]))))
+      (.addKeyListener
+       (reify KeyListener
+         (keyPressed
+           [_ event]
+           (when (= (.getKeyCode ^KeyEvent event) KeyEvent/VK_ENTER)
+             (.consume ^KeyEvent event)))
+         (keyReleased
+           [_ event]
+           (when (= (.getKeyCode ^KeyEvent event) KeyEvent/VK_ENTER)
+             (let [string (-> (.getText jrepl) (clojure.string/trim) (clojure.string/trim-newline))]
+               (when (not (empty? string))
+                 (go
+                   (try
+                     (let [form (read-string string)
+                           out| (chan 1)
+                           _ (put! eval| {:form form :out| out|})
+                           _ (<! out|)
+                           result (binding [*ns* *ns]
+                                    (eval form))]
+                       (put! eval| {:result result}))
+                     (finally
+                       (SwingUtilities/invokeLater
+                        (reify Runnable
+                          (run [_]
+                            (.setText jrepl "")))))))))))
+         (keyTyped
+           [_ event]))))
 
     (doto jcode-panel
       (.setLayout (MigLayout. "insets 0"
@@ -222,25 +225,28 @@
 
     (go
       (loop []
-        (when-let [{:keys [form result]} (<! eval|)]
+        (when-let [{:keys [form result out|] :as value} (<! eval|)]
           (SwingUtilities/invokeLater
            (reify Runnable
              (run [_]
-               (doto joutput
-                 (.append "=> "))
-               (doto joutput
-                 (.append (str form))
-                 (.append "\n"))
-               (doto joutput
-                 (.append (if (string? result) result (pr-str result)))
-                 (.append "\n")))))
-          #_(go
-              (<! (timeout 10))
-              (SwingUtilities/invokeLater
-               (reify Runnable
-                 (run [_]
-                   (let [scrollbar (.getVerticalScrollBar joutput-scroll)]
-                     (.setValue scrollbar (.getMaximum scrollbar)))))))
+               (when form
+                 (doto joutput
+                   (.append "=> "))
+                 (doto joutput
+                   (.append (str form))
+                   (.append "\n")))
+               (when (contains? value :result)
+                 (doto joutput
+                   (.append (if (string? result) result (pr-str result)))
+                   (.append "\n")))
+               (when out|
+                 (close! out|)))))
+
+          (SwingUtilities/invokeLater
+           (reify Runnable
+             (run [_]
+               (let [scrollbar (.getVerticalScrollBar joutput-scroll)]
+                 (.setValue scrollbar (.getMaximum scrollbar))))))
           (recur))))
 
     nil))
