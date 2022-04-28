@@ -46,6 +46,7 @@
 
 (defonce stateA (atom nil))
 (defonce resize| (chan (sliding-buffer 1)))
+(defonce eval| (chan 10))
 (defonce canvas-draw| (chan (sliding-buffer 1)))
 (def ^:dynamic ^JFrame jframe nil)
 (def ^:dynamic ^Canvas canvas nil)
@@ -54,7 +55,7 @@
 (def ^:dynamic ^JEditorPane jeditor nil)
 (def ^:dynamic ^JScrollPane joutput-scroll nil)
 (def ^:dynamic ^Graphics2D graphics nil)
-(defonce *ns (find-ns 'Cara-Dune.main))
+#_(defonce *ns (find-ns 'Cara-Dune.main))
 
 (def ^:const energy-per-move 100)
 (def ^:const canvas-width 1600)
@@ -111,8 +112,7 @@
   []
   (let [string (-> (.getText jeditor) (clojure.string/trim) (clojure.string/trim-newline))
         form (read-string string)]
-    (binding [*ns* *ns]
-      (eval form))))
+    (put! eval| {:form form})))
 
 (defn reload
   []
@@ -131,6 +131,8 @@
   [& args]
   (println "i dont want my next job")
 
+  #_(alter-var-root #'*ns* (constantly (find-ns 'Cara-Dune.main)))
+
   (when SystemInfo/isMacOS
     (System/setProperty "apple.laf.useScreenMenuBar" "true")
     (System/setProperty "apple.awt.application.name" jframe-title)
@@ -146,7 +148,7 @@
     (System/setProperty "flatlaf.uiScale" "2x"))
 
   (FlatLightLaf/setup)
-  
+
   (FlatDesktop/setQuitHandler (reify Consumer
                                 (accept [_ response]
                                   (.performQuit ^FlatDesktop$QuitResponse response))
@@ -203,7 +205,8 @@
          #_(.add root-panel jtoolbar "dock north")
 
          (Cara-Dune.beans/editor-process
-          {:*ns *ns
+          {:ns-sym 'Cara-Dune.main
+           :eval| eval|
            :jcode-panel jcode-panel
            :jrepl jrepl
            :joutput joutput
@@ -256,7 +259,7 @@
                         (put! canvas-draw| true))))
 
          (do
-           (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main)
+           (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|)
 
            (force-resize)
 

@@ -31,7 +31,7 @@
    (org.kordamp.ikonli.codicons Codicons)
    (net.miginfocom.swing MigLayout)
    (net.miginfocom.layout ConstraintParser LC UnitValue)
-   (java.io ByteArrayOutputStream PrintStream)
+   (java.io ByteArrayOutputStream PrintStream OutputStreamWriter PrintWriter)
    (java.lang Runnable)
 
    (java.awt.image BufferedImage)
@@ -49,11 +49,12 @@
           (print (eval-form `(with-out-str (Wichita.repl/doc ~fn-name)) {}))))))
 
 (defn print-ns-fns-docs
-  [ns-sym]
+  [ns-sym eval|]
   (let [fn-names (keys (ns-publics ns-sym))]
     (doseq [fn-name fn-names]
-      (binding [*ns* (find-ns ns-sym)]
-        (eval `(Wichita.repl/doc ~fn-name))))))
+      (put! eval| {:form `(Wichita.repl/doc ~fn-name)})
+      #_(binding [*ns* (find-ns ns-sym)]
+          (eval `(Wichita.repl/doc ~fn-name))))))
 
 (defn console-output-stream ^ByteArrayOutputStream
   [{:keys [^Color text-color
@@ -141,22 +142,28 @@
 
     (.setEditable jtext-component false)
 
-    (System/setOut (PrintStream.
-                    (console-output-stream {:text-color Color/BLACK
-                                            :print-stream System/out
-                                            :append? remove-from-start?
-                                            :jtext-component jtext-component})
-                    true))
-    (System/setErr (PrintStream.
-                    (console-output-stream {:text-color Color/BLACK
-                                            :print-stream System/err
-                                            :append? remove-from-start?
-                                            :jtext-component jtext-component})
-                    true)))
+    (let [out (PrintStream.
+               (console-output-stream {:text-color Color/BLACK
+                                       :print-stream System/out
+                                       :append? remove-from-start?
+                                       :jtext-component jtext-component})
+               true)
+          err (PrintStream.
+               (console-output-stream {:text-color Color/BLACK
+                                       :print-stream System/err
+                                       :append? remove-from-start?
+                                       :jtext-component jtext-component})
+               true)]
+      (System/setOut out)
+      (System/setErr err)
+      (alter-var-root #'*out* (constantly (OutputStreamWriter. out)))
+      (alter-var-root #'*err* (constantly (PrintWriter.
+                                           (OutputStreamWriter. err) true)))))
   nil)
 
 (defn editor-process
-  [{:keys [*ns
+  [{:keys [eval|
+           ns-sym
            ^JPanel jcode-panel
            ^JTextArea jrepl
            ^JTextArea joutput
@@ -164,7 +171,7 @@
            ^JEditorPane jeditor
            ^JScrollPane jeditor-scroll]
     :as opts}]
-  (let [eval| (chan 10)]
+  (let []
 
     (doto jeditor
       #_(.setBorder (EmptyBorder. #_top 0 #_left 0 #_bottom 0 #_right 0)))
@@ -195,20 +202,7 @@
            (when (= (.getKeyCode ^KeyEvent event) KeyEvent/VK_ENTER)
              (let [string (-> (.getText jrepl) (clojure.string/trim) (clojure.string/trim-newline))]
                (when (not (empty? string))
-                 (go
-                   (try
-                     (let [form (read-string string)
-                           out| (chan 1)
-                           _ (put! eval| {:form form :out| out|})
-                           _ (<! out|)
-                           result (binding [*ns* *ns]
-                                    (eval form))]
-                       (put! eval| {:result result}))
-                     (finally
-                       (SwingUtilities/invokeLater
-                        (reify Runnable
-                          (run [_]
-                            (.setText jrepl "")))))))))))
+                 (put! eval| {:string string})))))
          (keyTyped
            [_ event]))))
 
@@ -224,32 +218,41 @@
     #_(.setLeftComponent split-pane code-panel)
 
     (go
-      (loop []
-        (when-let [{:keys [form result out|] :as value} (<! eval|)]
-          (SwingUtilities/invokeLater
-           (reify Runnable
-             (run [_]
-               (when form
-                 (doto joutput
-                   (.append "=> "))
-                 (doto joutput
-                   (.append (str form))
-                   (.append "\n")))
-               (when (contains? value :result)
-                 (doto joutput
-                   (.append (if (string? result) result (pr-str result)))
-                   (.append "\n")))
-               (when out|
-                 (close! out|)))))
+      (binding [*ns* (find-ns ns-sym)]
+        (loop []
+          (when-let [{:keys [form string] :as value} (<! eval|)]
+            (try
+              (let [form (or form (read-string string))
+                    ns-name (.getName *ns*)]
+                (SwingUtilities/invokeLater
+                 (reify Runnable
+                   (run [_]
+                     (doto joutput
+                       (.append (str ns-name "=> ")))
+                     (doto joutput
+                       (.append (str form))
+                       (.append "\n")))))
 
-          (SwingUtilities/invokeLater
-           (reify Runnable
-             (run [_]
-               (let [scrollbar (.getVerticalScrollBar joutput-scroll)]
-                 (.setValue scrollbar (.getMaximum scrollbar))))))
-          (recur))))
+                (let [result (eval form)]
+                  (SwingUtilities/invokeLater
+                   (reify Runnable
+                     (run [_]
+                       (doto joutput
+                         (.append (if (string? result) result (pr-str result)))
+                         (.append "\n"))))))
+
+                (SwingUtilities/invokeLater
+                 (reify Runnable
+                   (run [_]
+                     (let [scrollbar (.getVerticalScrollBar joutput-scroll)]
+                       (.setValue scrollbar (.getMaximum scrollbar)))))))
+              (catch Exception ex (println ex))
+              (finally
+                (SwingUtilities/invokeLater
+                 (reify Runnable
+                   (run [_]
+                     (.setText jrepl ""))))))
+
+            (recur)))))
 
     nil))
-
-
-
