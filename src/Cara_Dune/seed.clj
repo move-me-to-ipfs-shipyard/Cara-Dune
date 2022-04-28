@@ -39,6 +39,13 @@
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
+(defn invoke-later-on-swing-edt
+  [f]
+  (SwingUtilities/invokeLater
+   (reify Runnable
+     (run [_]
+       (f _)))))
+
 (defn color-for-word ^Color
   [^String word]
   (let [digest (->
