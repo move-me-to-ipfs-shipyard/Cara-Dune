@@ -223,7 +223,8 @@
           (when-let [{:keys [form string] :as value} (<! eval|)]
             (try
               (let [form (or form (read-string string))
-                    ns-name (.getName *ns*)]
+                    ns-name (.getName *ns*)
+                    done| (chan 1)]
                 (SwingUtilities/invokeLater
                  (reify Runnable
                    (run [_]
@@ -231,21 +232,27 @@
                        (.append (str ns-name "=> ")))
                      (doto joutput
                        (.append (str form))
-                       (.append "\n")))))
+                       (.append "\n"))
+                     (put! done| true))))
 
-                (let [result (eval form)]
+                (let [_ (<! done|)
+                      result (eval form)]
                   (SwingUtilities/invokeLater
                    (reify Runnable
                      (run [_]
                        (doto joutput
                          (.append (if (string? result) result (pr-str result)))
-                         (.append "\n"))))))
+                         (.append "\n"))
+                       (put! done| true)))))
 
+                (<! done|)
                 (SwingUtilities/invokeLater
                  (reify Runnable
                    (run [_]
                      (let [scrollbar (.getVerticalScrollBar joutput-scroll)]
-                       (.setValue scrollbar (.getMaximum scrollbar)))))))
+                       (.setValue scrollbar (.getMaximum scrollbar))
+                       (put! done| true)))))
+                (<! done|))
               (catch Exception ex (println ex))
               (finally
                 (SwingUtilities/invokeLater

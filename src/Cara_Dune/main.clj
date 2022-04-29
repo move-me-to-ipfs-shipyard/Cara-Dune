@@ -260,9 +260,9 @@
                         (put! canvas-draw| true))))
 
          (do
-           (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|)
 
-           (force-resize)
+
+
 
            (->>
             '(let [locations| (->
@@ -292,7 +292,13 @@
             #_(Joker.core/reformat-string)
             (.setText jeditor))
 
-           (.setText jrepl "(transmit)")))))
+           (.setText jrepl "(transmit)")
+
+           (force-resize)
+
+           (go
+             (<! (timeout 50))
+             (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
 
 
     (go
@@ -316,7 +322,6 @@
           (condp = port
             canvas-draw|
             (let []
-              #_(println :canvas-draw)
               (SwingUtilities/invokeLater
                (reify Runnable
                  (run [_]

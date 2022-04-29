@@ -67,3 +67,27 @@
                      #_(put! out| (cheshire.core/parse-string (:body response) true)))
                    (fn [ex] (println "exception message is: " (ex-message ex)))))]
     out|))
+
+(defn multiplayer-process
+  [{:keys []
+    :as opts}]
+  (let [ipfs (IPFS. "/ip4/127.0.0.1/tcp/5002")
+        base-url "http://127.0.0.1:5002"
+        topic (encode-base64url-u "raisins")
+        id (-> ipfs (.id) (.get "ID"))
+        sub| (pubsub-sub base-url  topic)]
+
+    (go
+      (loop []
+        (when-let [value (<! sub|)]
+          (when-not (= (:from value) id)
+            (println (merge value
+                            {:data (-> (:data value) (decode-base64url-u) (read-string))})))
+          (recur))))
+
+    (go
+      (loop []
+        (<! (timeout 2000))
+        (pubsub-pub base-url topic (str {:id id
+                                         :rand-int (rand-int 100)}))
+        (recur)))))
