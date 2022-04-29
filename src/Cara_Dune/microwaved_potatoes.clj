@@ -38,9 +38,11 @@
    (javax.imageio ImageIO)
    (java.security MessageDigest)))
 
+(do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
+
 (defn menubar-process
-  [{:keys [jmenubar
-           jframe]
+  [{:keys [^JMenuBar jmenubar
+           ^JFrame jframe]
     :as opts}]
   (let [on-menubar-item (fn [f]
                           (reify ActionListener
@@ -72,6 +74,11 @@
                       (.addActionListener on-menu-item-show-dialog)))
               (.add (doto (JMenuItem.)
                       (.setText "discover")
+                      #_(.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_N (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      #_(.setMnemonic \U)
+                      (.addActionListener on-menu-item-show-dialog)))
+              (.add (doto (JMenuItem.)
+                      (.setText "settings")
                       #_(.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_N (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       #_(.setMnemonic \U)
                       (.addActionListener on-menu-item-show-dialog)))
@@ -120,7 +127,7 @@
   nil)
 
 (defn toolbar-process
-  [{:keys [jtoolbar]
+  [{:keys [^JToolBar jtoolbar]
     :as opts}]
   (let []
     (doto jtoolbar

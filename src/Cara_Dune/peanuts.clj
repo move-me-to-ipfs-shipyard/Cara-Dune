@@ -8,3 +8,5 @@
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]))
+
+(do (set! *warn-on-reflection* true) (set! *unchecked-math* true))

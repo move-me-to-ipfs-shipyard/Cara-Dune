@@ -118,12 +118,13 @@
   []
   (require
    '[Cara-Dune.seed]
-   '[Cara-Dune.beans]
-   '[Cara-Dune.corn]
-   '[Cara-Dune.microwaved_potatoes]
-   '[Cara-Dune.kiwis]
-   '[Cara-Dune.peanuts]
    '[Cara-Dune.raisins]
+   '[Cara-Dune.peanuts]
+   '[Cara-Dune.kiwis]
+   '[Cara-Dune.salt]
+   '[Cara-Dune.microwaved-potatoes]
+   '[Cara-Dune.corn]
+   '[Cara-Dune.beans]
    '[Cara-Dune.main]
    :reload))
 
