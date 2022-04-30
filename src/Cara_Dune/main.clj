@@ -38,16 +38,21 @@
    (org.kordamp.ikonli.codicons Codicons)
    (net.miginfocom.swing MigLayout)
    (net.miginfocom.layout ConstraintParser LC UnitValue)
-
+   (java.io File)
    (java.lang Runnable))
   (:gen-class))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
 (defonce stateA (atom nil))
+(defonce gamesA (atom nil))
+(defonce gameA (atom nil))
 (defonce resize| (chan (sliding-buffer 1)))
 (defonce eval| (chan 10))
 (defonce canvas-draw| (chan (sliding-buffer 1)))
+(defonce ops| (chan (sliding-buffer 1)))
+(defonce table| (chan (sliding-buffer 10)))
+(defonce sub| (chan (sliding-buffer 10)))
 (def ^:dynamic ^JFrame jframe nil)
 (def ^:dynamic ^Canvas canvas nil)
 (def ^:dynamic ^JTextArea jrepl nil)
@@ -180,8 +185,16 @@
         canvas (Canvas.)
         jcanvas-panel (JPanel.)]
 
-    (reset! stateA {})
-
+    (let [data-dir-path (or
+                         (some-> (System/getenv "CARA_DUNE_PATH")
+                                 (.replaceFirst "^~" (System/getProperty "user.home")))
+                         (.getCanonicalPath ^File (Wichita.java.io/file (System/getProperty "user.home") "Cara-Dune")))
+          state-file-path (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path "Cara-Dune.edn"))]
+      (Wichita.java.io/make-parents data-dir-path)
+      (reset! stateA {})
+      (reset! gamesA {})
+      (reset! gameA {}))
+    
     (SwingUtilities/invokeLater
      (reify Runnable
        (run [_]
@@ -206,7 +219,8 @@
 
          (Cara-Dune.microwaved-potatoes/menubar-process
           {:jmenubar jmenubar
-           :jframe jframe})
+           :jframe jframe
+           :menubar| ops|})
          (.setJMenuBar jframe jmenubar)
 
          #_(Cara-Dune.microwaved-potatoes/toolbar-process
@@ -268,10 +282,6 @@
                         (put! canvas-draw| true))))
 
          (do
-
-
-
-
            (->>
             '(let [locations| (->
                                [{:row 1 :col 1}
@@ -300,9 +310,9 @@
 
            (force-resize)
 
-           (go
-             (<! (timeout 50))
-             (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
+           #_(go
+               (<! (timeout 50))
+               (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
 
 
     (go
@@ -333,5 +343,48 @@
                    (draw-grid)
                    (draw-line)
                    (draw-word))))
-              (recur)))))))
+              (recur))))))
+
+    (go
+      (loop []
+        (when-let [value (<! ops|)]
+
+          (condp = (:op value)
+            :host
+            (let [{:keys [frequency]} value]
+              (swap! gameA assoc :host-id (:peer-id @stateA))
+              (swap! gameA assoc :frequency frequency))
+            
+            :leave
+            (let [{:keys [frequency]} value]
+              (swap! gameA assoc :host-id (:peer-id @stateA))
+              (swap! gameA assoc :frequency frequency))
+            
+            :join
+            (let [{:keys [frequency]} value]
+              (swap! gameA assoc :host-id (:peer-id @stateA))
+              (swap! gameA assoc :frequency frequency))
+
+            :discover
+            (let [discover-jframe (JFrame. "discover")]
+              (Cara-Dune.microwaved-potatoes/discover-process
+               {:jframe discover-jframe
+                :root-jframe jframe
+                :ops| ops|
+                :gamesA gamesA
+                :gameA gameA
+                :stateA stateA})
+              (reset! gameA @gameA))
+
+            :host-yes
+            (let [{:keys [frequency]} value]
+              (println :frequency frequency)))
+
+          (recur))))
+
+    (let [port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")]
+      (Cara-Dune.corn/subscribe-process
+       {:sub| sub|
+        :ipfs-api-url (format "http://127.0.0.1:%s" port)
+        :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)})))
   (println "Kuiil has spoken"))

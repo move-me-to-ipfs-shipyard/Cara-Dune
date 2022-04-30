@@ -32,8 +32,8 @@
       (String. StandardCharsets/UTF_8)))
 
 (defn pubsub-sub
-  [base-url topic]
-  (let [out| (chan (sliding-buffer 10))]
+  [base-url topic out|]
+  (let []
     (thread
       (let [messages (->
                       (clj-http.client/post
@@ -49,12 +49,11 @@
                       (cheshire.core/parsed-seq true))]
         (doseq [message messages]
           (put! out| message))))
-    out|))
+    nil))
 
 (defn pubsub-pub
-  [base-url topic message]
-  (let [out| (chan (sliding-buffer 10))
-        response (->
+  [base-url topic message out|]
+  (let [response (->
                   (clj-http.client/post
                    (str base-url "/api/v0/pubsub/pub")
                    {:query-params {:arg topic}
@@ -66,28 +65,33 @@
                      #_(println (= (:status response) 200))
                      #_(put! out| (cheshire.core/parse-string (:body response) true)))
                    (fn [ex] (println "exception message is: " (ex-message ex)))))]
-    out|))
+    nil))
 
-(defn multiplayer-process
-  [{:keys []
+(defn subscribe-process
+  [{:keys [^String ipfs-api-multiaddress
+           ^String ipfs-api-url
+           sub|]
     :as opts}]
-  (let [ipfs (IPFS. "/ip4/127.0.0.1/tcp/5002")
-        base-url "http://127.0.0.1:5002"
+  (let [ipfs (IPFS. ipfs-api-multiaddress)
+        base-url ipfs-api-url
         topic (encode-base64url-u "raisins")
         id (-> ipfs (.id) (.get "ID"))
-        sub| (pubsub-sub base-url  topic)]
+        out| (chan (sliding-buffer 10))]
+    (pubsub-sub base-url  topic out|)
 
     (go
       (loop []
-        (when-let [value (<! sub|)]
+        (when-let [value (<! out|)]
           (when-not (= (:from value) id)
-            (println (merge value
-                            {:data (-> (:data value) (decode-base64url-u) (read-string))})))
+            (put! sub| (merge value
+                              {:message (-> (:data value) (decode-base64url-u) (read-string))}))
+            #_(println (merge value
+                              {:message (-> (:data value) (decode-base64url-u) (read-string))})))
           (recur))))
 
-    (go
-      (loop []
-        (<! (timeout 2000))
-        (pubsub-pub base-url topic (str {:id id
-                                         :rand-int (rand-int 100)}))
-        (recur)))))
+    #_(go
+        (loop []
+          (<! (timeout 2000))
+          (pubsub-pub base-url topic (str {:id id
+                                           :rand-int (rand-int 100)}))
+          (recur)))))

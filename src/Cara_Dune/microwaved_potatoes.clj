@@ -12,8 +12,9 @@
    [Cara-Dune.seed])
   (:import
    (javax.swing JFrame WindowConstants ImageIcon JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
-   (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane)
+   (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
    (javax.swing.border EmptyBorder)
+   (javax.swing.table DefaultTableModel)
    (javax.swing.event DocumentListener DocumentEvent)
    (javax.swing.text SimpleAttributeSet StyleConstants JTextComponent)
    (java.awt Canvas Graphics Graphics2D Shape Color Polygon Dimension BasicStroke Toolkit Insets BorderLayout)
@@ -42,7 +43,8 @@
 
 (defn menubar-process
   [{:keys [^JMenuBar jmenubar
-           ^JFrame jframe]
+           ^JFrame jframe
+           menubar|]
     :as opts}]
   (let [on-menubar-item (fn [f]
                           (reify ActionListener
@@ -58,25 +60,29 @@
               (.setText "program")
               (.setMnemonic \F)
               (.add (doto (JMenuItem.)
-                      (.setText "host")
+                      (.setText "game")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
-                      (.addActionListener on-menu-item-show-dialog)))
-              (.add (doto (JMenuItem.)
-                      (.setText "join")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_J (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \J)
-                      (.addActionListener on-menu-item-show-dialog)))
-              (.add (doto (JMenuItem.)
-                      (.setText "observe")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_O (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \O)
-                      (.addActionListener on-menu-item-show-dialog)))
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! menubar| {:op :game}))))))
+              #_(.add (doto (JMenuItem.)
+                        (.setText "join")
+                        (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_J (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                        (.setMnemonic \J)
+                        (.addActionListener on-menu-item-show-dialog)))
+              #_(.add (doto (JMenuItem.)
+                        (.setText "observe")
+                        (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_O (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                        (.setMnemonic \O)
+                        (.addActionListener on-menu-item-show-dialog)))
               (.add (doto (JMenuItem.)
                       (.setText "discover")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_D (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \D)
-                      (.addActionListener on-menu-item-show-dialog)))
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! menubar| {:op :discover}))))))
               (.add (doto (JMenuItem.)
                       (.setText "settings")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
@@ -149,3 +155,186 @@
               (.setIcon (FontIcon/of org.kordamp.ikonli.codicons.Codicons/REDO (UIScale/scale 16) Color/BLACK))))
       #_(.addSeparator)))
   nil)
+
+(defn host-game-process
+  [{:keys [^JFrame root-jframe
+           ^JFrame jframe
+           ^String frequency
+           yes|]
+    :or {frequency (str (java.util.UUID/randomUUID))}
+    :as opts}]
+  (let [root-panel (JPanel.)
+        jfrequency-text-field (JTextField. frequency 40)
+        jbutton-yes (JButton. "yes")]
+
+    (doto jframe
+      (.add root-panel))
+
+    (doto jbutton-yes
+      (.addActionListener
+       (reify ActionListener
+         (actionPerformed [_ event]
+           (put! yes| {:op :host-yes
+                       :frequency (.getText jfrequency-text-field)})
+           (.dispose jframe)))))
+
+    (doto root-panel
+      (.setLayout (MigLayout. "insets 10"))
+      (.add (JLabel. "frequency") "cell 0 0")
+      (.add jfrequency-text-field "cell 1 0")
+      (.add jbutton-yes "cell 0 1"))
+
+    (.setPreferredSize jframe (Dimension. (* 0.8 (.getWidth root-jframe))
+                                          (* 0.8 (.getHeight root-jframe))))
+
+    (doto jframe
+      (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+      (.pack)
+      (.setLocationRelativeTo root-jframe)
+      (.setVisible true)))
+  nil)
+
+(defn discover-process
+  [{:keys [^JFrame root-jframe
+           ^JFrame jframe
+           ops|
+           gamesA
+           gameA
+           stateA]
+    :or {}
+    :as opts}]
+  (let [root-panel (JPanel.)
+        jtable (JTable.)
+        jscroll-pane (JScrollPane.)
+
+        jbutton-host (JButton. "host")
+        jbutton-join (JButton. "join")
+        jbutton-observe (JButton. "observe")
+        jbutton-leave (JButton. "leave")
+        jbutton-open (JButton. "open")
+
+        jtext-field-frequency (JTextField. (str (java.util.UUID/randomUUID)) 40)
+
+        column-names (into-array ^Object ["frequency" "guests"])
+        table-model (DefaultTableModel.) #_(DefaultTableModel.
+                                            ^"[[Ljava.lang.Object;"
+                                            (to-array-2d
+                                             [[(str (java.util.UUID/randomUUID)) 10]
+                                              [(str (java.util.UUID/randomUUID)) 10]])
+                                            ^"[Ljava.lang.Object;"
+                                            (into-array ^Object ["frequency" "guests"])
+                                            #_(object-array
+                                               [(object-array)
+                                                (object-array
+                                                 [(str (java.util.UUID/randomUUID)) 10])]))]
+
+    (doto jframe
+      (.add root-panel))
+
+    (doto jtable
+      (.setModel table-model)
+      (.setAutoCreateRowSorter true))
+
+    (doto jscroll-pane
+      (.setViewportView jtable)
+      (.setHorizontalScrollBarPolicy ScrollPaneConstants/HORIZONTAL_SCROLLBAR_NEVER))
+
+    (doto jbutton-host
+      (.addActionListener
+       (reify ActionListener
+         (actionPerformed [_ event]
+           (put! ops| {:op :host
+                       :frequency (.getText jtext-field-frequency)})
+           (.dispose jframe)))))
+
+    (doto jbutton-join
+      (.addActionListener
+       (reify ActionListener
+         (actionPerformed [_ event]
+           (put! ops| {:op :join
+                       :frequency (.getText jtext-field-frequency)})
+           (.dispose jframe)))))
+
+    (doto jbutton-leave
+      (.addActionListener
+       (reify ActionListener
+         (actionPerformed [_ event]
+           (put! ops| {:op :leave
+                       :frequency (.getText jtext-field-frequency)})
+           (.dispose jframe)))))
+
+    (doto root-panel
+      (.setLayout (MigLayout. "insets 10"))
+      (.add jscroll-pane "cell 0 0 3 1, width 100%")
+      (.add jtext-field-frequency "cell 0 1")
+      (.add jbutton-host "cell 0 2")
+      (.add jbutton-join "cell 0 2")
+      (.add jbutton-open "cell 0 2")
+      (.add jbutton-leave "cell 0 2"))
+
+    (.setPreferredSize jframe (Dimension. (* 0.8 (.getWidth root-jframe))
+                                          (* 0.8 (.getHeight root-jframe))))
+
+    (remove-watch gameA :discover-process)
+    (add-watch gameA :discover-process
+               (fn [ref wathc-key old-state new-state]
+                 #_(println  :gameA old-state new-state)
+                 #_(when (not= old-state new-state))
+                 (SwingUtilities/invokeLater
+                  (reify Runnable
+                    (run [_]
+                      (let [we-host? (= (:host-id new-state) (:peer-id @stateA))
+                            in-game? (not (empty? new-state))]
+                        (.setEnabled jbutton-open in-game?)
+                        (.setEnabled jbutton-leave in-game?)
+                        (.setEnabled jbutton-host (not in-game?))
+                        (.setEnabled jbutton-join (not in-game?))))))))
+
+    (remove-watch gamesA :discover-process)
+    (add-watch gamesA :discover-process
+               (fn [ref wathc-key old-state new-state]
+                 (when (not= old-state new-state)
+
+                   (SwingUtilities/invokeLater
+                    (reify Runnable
+                      (run [_]
+                        (.setDataVector table-model
+                                        ^"[[Ljava.lang.Object;"
+                                        (to-array-2d
+                                         [[(str (java.util.UUID/randomUUID)) 10]
+                                          [(str (java.util.UUID/randomUUID)) 10]])
+                                        #_(to-array-2d
+                                           (map (fn [[frequency game-state]]
+                                                  [[frequency nil]]) new-state))
+                                        ^"[Ljava.lang.Object;"
+                                        column-names)))))))
+
+    #_(go
+        (loop []
+          (when-let [value (<! table|)]
+            (SwingUtilities/invokeLater
+             (reify Runnable
+               (run [_]
+                 (.setDataVector table-model
+                                 ^"[[Ljava.lang.Object;"
+                                 (to-array-2d
+                                  value)
+                                 ^"[Ljava.lang.Object;"
+                                 column-names))))
+            (recur))))
+
+    (doto jframe
+      (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+      (.pack)
+      (.setLocationRelativeTo root-jframe)
+      (.setVisible true)))
+  nil)
+
+(comment
+  
+  (.getName (class (make-array Object 1 1)))
+  
+  (.getName (class (make-array String 1)))
+  
+  ;
+  )
