@@ -75,6 +75,14 @@
   []
   (.drawLine graphics  (* 0.3 (.getWidth canvas)) (* 0.3 (.getHeight canvas)) (* 0.7 (.getWidth canvas)) (* 0.7 (.getHeight canvas))))
 
+(defn draw-grid
+  []
+  (Cara-Dune.kiwis/draw-grid
+   {:canvas canvas
+    :graphics graphics
+    :grid-rows grid-rows
+    :grid-cols grid-cols}))
+
 (defn draw-Cara
   [{:keys [row col]}]
   (SwingUtilities/invokeLater
@@ -278,11 +286,7 @@
                    (when-let [value (<! locations|)]
                      (<! (timeout 1000))
                      (clear-canvas)
-                     (Cara-Dune.kiwis/draw-grid
-                      {:canvas canvas
-                       :graphics graphics
-                       :grid-rows grid-rows
-                       :grid-cols grid-cols})
+                     (draw-grid)
                      (draw-line)
                      (draw-word)
                      (draw-Cara value)
@@ -326,11 +330,7 @@
                (reify Runnable
                  (run [_]
                    (clear-canvas)
-                   (Cara-Dune.kiwis/draw-grid
-                    {:canvas canvas
-                     :graphics graphics
-                     :grid-rows grid-rows
-                     :grid-cols grid-cols})
+                   (draw-grid)
                    (draw-line)
                    (draw-word))))
               (recur)))))))
