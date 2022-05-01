@@ -6,6 +6,7 @@
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
+   [clojure.core.async.impl.protocols :refer [closed?]]
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
    [clojure.pprint :as Wichita.pprint]
@@ -49,8 +50,10 @@
 (defonce gameA (atom nil))
 (defonce resize| (chan (sliding-buffer 1)))
 (defonce eval| (chan 10))
+(defonce cancel-sub| (chan 1))
+(defonce cancel-pub| (chan 1))
 (defonce canvas-draw| (chan (sliding-buffer 1)))
-(defonce ops| (chan (sliding-buffer 1)))
+(defonce ops| (chan 10))
 (defonce table| (chan (sliding-buffer 10)))
 (defonce sub| (chan (sliding-buffer 10)))
 (def ^:dynamic ^JFrame jframe nil)
@@ -194,7 +197,7 @@
       (reset! stateA {})
       (reset! gamesA {})
       (reset! gameA {}))
-    
+
     (SwingUtilities/invokeLater
      (reify Runnable
        (run [_]
@@ -347,23 +350,71 @@
 
     (go
       (loop []
-        (when-let [value (<! ops|)]
+        (when-let [{:keys [message] :as value} (<! sub|)]
+          (condp = (:op message)
+            :game-state
+            (let [{:keys [game-state]} message]
+              (swap! gamesA merge {(:frequency game-state) message})))
+          (recur))))
 
+    (go
+      (loop []
+        (<! (timeout 3000))
+        (let [expired (into []
+                            (comp
+                             (keep (fn [[frequency {:keys [timestamp game-state]}]]
+                                     #_(println (- (.getTime (java.util.Date.)) timestamp))
+                                     (when-not (< (- (.getTime (java.util.Date.)) timestamp) 4000)
+                                       frequency))))
+                            @gamesA)]
+          (when-not (empty? expired)
+            (apply swap! gamesA dissoc expired)))
+        (recur)))
+
+    (go
+      (loop []
+        (when-let [value (<! ops|)]
           (condp = (:op value)
-            :host
-            (let [{:keys [frequency]} value]
-              (swap! gameA assoc :host-id (:peer-id @stateA))
-              (swap! gameA assoc :frequency frequency))
-            
+            :game
+            (let [{:keys [frequency role]} value
+                  id| (chan 1)
+                  port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")
+                  ipfs-api-url (format "http://127.0.0.1:%s" port)
+                  topic (Cara-Dune.corn/encode-base64url-u frequency)
+                  _ (Cara-Dune.corn/subscribe-process
+                     {:sub| sub|
+                      :cancel| cancel-sub|
+                      :frequency frequency
+                      :ipfs-api-url ipfs-api-url
+                      :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
+                      :id| id|})
+                  host? (= role :host)
+                  {:keys [peer-id]} (<! id|)]
+              #_(println :game value)
+              (swap! gameA merge
+                     {:players {peer-id {:peer-id peer-id}}
+                      :frequency frequency}
+                     (when host?
+                       {:host-peer-id peer-id}))
+              (when host?
+                (go
+                  (loop []
+                    (alt!
+                      cancel-pub|
+                      ([_] (do nil))
+
+                      (timeout 2000)
+                      ([_]
+                       (Cara-Dune.corn/pubsub-pub ipfs-api-url topic (str {:op :game-state
+                                                                           :timestamp (.getTime (java.util.Date.))
+                                                                           :game-state @gameA}))
+                       (recur)))))))
+
             :leave
             (let [{:keys [frequency]} value]
-              (swap! gameA assoc :host-id (:peer-id @stateA))
-              (swap! gameA assoc :frequency frequency))
-            
-            :join
-            (let [{:keys [frequency]} value]
-              (swap! gameA assoc :host-id (:peer-id @stateA))
-              (swap! gameA assoc :frequency frequency))
+              (>! cancel-sub| true)
+              (>! cancel-pub| true)
+              (reset! gameA {}))
 
             :discover
             (let [discover-jframe (JFrame. "discover")]
@@ -382,9 +433,10 @@
 
           (recur))))
 
-    (let [port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")]
-      (Cara-Dune.corn/subscribe-process
-       {:sub| sub|
-        :ipfs-api-url (format "http://127.0.0.1:%s" port)
-        :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)})))
+    #_(let [port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")]
+        (Cara-Dune.corn/subscribe-process
+         {:sub| sub|
+          :cancel| cancel-pubsub|
+          :ipfs-api-url (format "http://127.0.0.1:%s" port)
+          :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)})))
   (println "Kuiil has spoken"))

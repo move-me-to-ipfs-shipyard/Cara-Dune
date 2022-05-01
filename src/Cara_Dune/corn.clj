@@ -16,6 +16,7 @@
    (io.ipfs.api IPFS)
    (java.util.stream Stream)
    (java.util Base64)
+   (java.io BufferedReader)
    (java.nio.charset StandardCharsets)))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
@@ -32,27 +33,33 @@
       (String. StandardCharsets/UTF_8)))
 
 (defn pubsub-sub
-  [base-url topic out|]
+  [base-url topic out| cancel|]
   (let []
     (thread
-      (let [messages (->
-                      (clj-http.client/post
-                       (str base-url "/api/v0/pubsub/sub")
-                       {:query-params {:arg topic}
-                        :as :reader}
-                       #_(fn [response]
-                           (println (type (:body response)))
-                           #_(with-open [reader (:body response)]
-                               (let [])))
-                       #_(fn [ex] (println "exception message is: " (.getMessage ex))))
-                      :body
-                      (cheshire.core/parsed-seq true))]
-        (doseq [message messages]
-          (put! out| message))))
+      (try
+        (let [request (->
+                       (clj-http.client/post
+                        (str base-url "/api/v0/pubsub/sub")
+                        {:query-params {:arg topic}
+                         :as :reader}
+                        #_(fn [response]
+                            (println (type (:body response)))
+                            #_(with-open [reader (:body response)]
+                                (let [])))
+                        #_(fn [ex] (println "exception message is: " (.getMessage ex)))))
+              ^BufferedReader reader (:body request)
+              messages (cheshire.core/parsed-seq reader true)]
+          (go
+            (<! cancel|)
+            (.close ^org.apache.http.impl.client.InternalHttpClient
+             (:http-client request)))
+          (doseq [message messages]
+            (put! out| message)))
+        (catch Exception ex (println ['org.apache.http.impl.client.InternalHttpClient :closed-with-execption]))))
     nil))
 
 (defn pubsub-pub
-  [base-url topic message out|]
+  [base-url topic message]
   (let [response (->
                   (clj-http.client/post
                    (str base-url "/api/v0/pubsub/pub")
@@ -70,23 +77,28 @@
 (defn subscribe-process
   [{:keys [^String ipfs-api-multiaddress
            ^String ipfs-api-url
-           sub|]
+           frequency
+           sub|
+           cancel|
+           id|]
     :as opts}]
   (let [ipfs (IPFS. ipfs-api-multiaddress)
         base-url ipfs-api-url
-        topic (encode-base64url-u "raisins")
+        topic (encode-base64url-u frequency)
         id (-> ipfs (.id) (.get "ID"))
         out| (chan (sliding-buffer 10))]
-    (pubsub-sub base-url  topic out|)
+    (put! id| {:peer-id id})
+    (pubsub-sub base-url  topic out| cancel|)
 
     (go
       (loop []
         (when-let [value (<! out|)]
-          (when-not (= (:from value) id)
-            (put! sub| (merge value
-                              {:message (-> (:data value) (decode-base64url-u) (read-string))}))
-            #_(println (merge value
-                              {:message (-> (:data value) (decode-base64url-u) (read-string))})))
+          (put! sub| (merge value
+                            {:message (-> (:data value) (decode-base64url-u) (read-string))}))
+          #_(when-not (= (:from value) id)
+
+              #_(println (merge value
+                                {:message (-> (:data value) (decode-base64url-u) (read-string))})))
           (recur))))
 
     #_(go

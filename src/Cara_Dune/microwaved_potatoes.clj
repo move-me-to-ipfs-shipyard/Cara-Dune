@@ -215,7 +215,7 @@
 
         jtext-field-frequency (JTextField. (str (java.util.UUID/randomUUID)) 40)
 
-        column-names (into-array ^Object ["frequency" "guests"])
+        column-names (into-array ^Object ["frequency" "host"])
         table-model (DefaultTableModel.) #_(DefaultTableModel.
                                             ^"[[Ljava.lang.Object;"
                                             (to-array-2d
@@ -243,17 +243,19 @@
       (.addActionListener
        (reify ActionListener
          (actionPerformed [_ event]
-           (put! ops| {:op :host
+           (put! ops| {:op :game
+                       :role :host
                        :frequency (.getText jtext-field-frequency)})
-           (.dispose jframe)))))
+           #_(.dispose jframe)))))
 
     (doto jbutton-join
       (.addActionListener
        (reify ActionListener
          (actionPerformed [_ event]
-           (put! ops| {:op :join
+           (put! ops| {:op :game
+                       :role :player
                        :frequency (.getText jtext-field-frequency)})
-           (.dispose jframe)))))
+           #_(.dispose jframe)))))
 
     (doto jbutton-leave
       (.addActionListener
@@ -261,7 +263,7 @@
          (actionPerformed [_ event]
            (put! ops| {:op :leave
                        :frequency (.getText jtext-field-frequency)})
-           (.dispose jframe)))))
+           #_(.dispose jframe)))))
 
     (doto root-panel
       (.setLayout (MigLayout. "insets 10"))
@@ -294,18 +296,18 @@
     (add-watch gamesA :discover-process
                (fn [ref wathc-key old-state new-state]
                  (when (not= old-state new-state)
-
+                   #_(println new-state)
                    (SwingUtilities/invokeLater
                     (reify Runnable
                       (run [_]
                         (.setDataVector table-model
                                         ^"[[Ljava.lang.Object;"
-                                        (to-array-2d
-                                         [[(str (java.util.UUID/randomUUID)) 10]
-                                          [(str (java.util.UUID/randomUUID)) 10]])
                                         #_(to-array-2d
-                                           (map (fn [[frequency game-state]]
-                                                  [[frequency nil]]) new-state))
+                                           [[(str (java.util.UUID/randomUUID)) 10]
+                                            [(str (java.util.UUID/randomUUID)) 10]])
+                                        (to-array-2d
+                                         (map (fn [[frequency {:keys [game-state]}]]
+                                                [[frequency (:host-peer-id game-state)]]) new-state))
                                         ^"[Ljava.lang.Object;"
                                         column-names)))))))
 
