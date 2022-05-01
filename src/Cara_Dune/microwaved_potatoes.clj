@@ -13,9 +13,10 @@
   (:import
    (javax.swing JFrame WindowConstants ImageIcon JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
+   (javax.swing DefaultListSelectionModel)
    (javax.swing.border EmptyBorder)
    (javax.swing.table DefaultTableModel)
-   (javax.swing.event DocumentListener DocumentEvent)
+   (javax.swing.event DocumentListener DocumentEvent ListSelectionListener ListSelectionEvent)
    (javax.swing.text SimpleAttributeSet StyleConstants JTextComponent)
    (java.awt Canvas Graphics Graphics2D Shape Color Polygon Dimension BasicStroke Toolkit Insets BorderLayout)
    (java.awt.event KeyListener KeyEvent MouseListener MouseEvent ActionListener ActionEvent ComponentListener ComponentEvent)
@@ -233,7 +234,17 @@
 
     (doto jtable
       (.setModel table-model)
-      (.setAutoCreateRowSorter true))
+      (.setRowSelectionAllowed true)
+      (.setSelectionModel (doto (DefaultListSelectionModel.)
+                            (.addListSelectionListener
+                             (reify ListSelectionListener
+                               (valueChanged [_ event]
+                                 (when (not= -1 (.getSelectedRow jtable))
+                                   (SwingUtilities/invokeLater
+                                    (reify Runnable
+                                      (run [_]
+                                        (.setText jtext-field-frequency (.getValueAt jtable (.getSelectedRow jtable) 0)))))))))))
+      #_(.setAutoCreateRowSorter true))
 
     (doto jscroll-pane
       (.setViewportView jtable)
@@ -261,8 +272,7 @@
       (.addActionListener
        (reify ActionListener
          (actionPerformed [_ event]
-           (put! ops| {:op :leave
-                       :frequency (.getText jtext-field-frequency)})
+           (put! ops| {:op :leave})
            #_(.dispose jframe)))))
 
     (doto root-panel
@@ -300,16 +310,29 @@
                    (SwingUtilities/invokeLater
                     (reify Runnable
                       (run [_]
-                        (.setDataVector table-model
-                                        ^"[[Ljava.lang.Object;"
-                                        #_(to-array-2d
-                                           [[(str (java.util.UUID/randomUUID)) 10]
-                                            [(str (java.util.UUID/randomUUID)) 10]])
-                                        (to-array-2d
-                                         (map (fn [[frequency {:keys [game-state]}]]
-                                                [[frequency (:host-peer-id game-state)]]) new-state))
-                                        ^"[Ljava.lang.Object;"
-                                        column-names)))))))
+                        (let [selected-frequency (when (not= -1 (.getSelectedRow jtable))
+                                                   (.getValueAt jtable (.getSelectedRow jtable) 0))
+                              data (map (fn [[frequency {:keys [frequency host-peer-id]}]]
+                                          [frequency host-peer-id]) new-state)]
+                          (.setDataVector table-model
+                                          ^"[[Ljava.lang.Object;"
+                                          #_(to-array-2d
+                                             [[(str (java.util.UUID/randomUUID)) 10]
+                                              [(str (java.util.UUID/randomUUID)) 10]])
+                                          (to-array-2d data)
+                                          ^"[Ljava.lang.Object;"
+                                          column-names)
+                          (when selected-frequency
+                            (let [^int new-index (->>
+                                                  data
+                                                  (into []
+                                                        (comp
+                                                         (map first)
+                                                         (map-indexed vector)
+                                                         (keep (fn [[index frequency]] (when (= frequency selected-frequency) index)))))
+                                                  (first))]
+                              (when new-index
+                                (.setRowSelectionInterval jtable new-index new-index)))))))))))
 
     #_(go
         (loop []
