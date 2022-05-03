@@ -48,6 +48,8 @@
 (defonce stateA (atom nil))
 (defonce gamesA (atom nil))
 (defonce gameA (atom nil))
+(defonce settingsA (atom nil))
+
 (defonce resize| (chan (sliding-buffer 1)))
 (defonce eval| (chan 10))
 (defonce cancel-sub| (chan 1))
@@ -63,6 +65,9 @@
 (def ^:dynamic ^JEditorPane jeditor nil)
 (def ^:dynamic ^JScrollPane joutput-scroll nil)
 (def ^:dynamic ^Graphics2D graphics nil)
+(def ^:dynamic ^JPanel jcode-panel nil)
+(def ^:dynamic ^JPanel jroot-panel nil)
+
 #_(defonce *ns (find-ns 'Cara-Dune.main))
 
 (def ^:const energy-per-move 100)
@@ -176,7 +181,7 @@
         jframe (JFrame. jframe-title)
         jmenubar (JMenuBar.)
         jtoolbar (JToolBar.)
-        root-panel (JPanel.)
+        jroot-panel (JPanel.)
 
         jcode-panel (JPanel.)
         jrepl (JTextArea. 1 80)
@@ -196,126 +201,140 @@
       (Wichita.java.io/make-parents data-dir-path)
       (reset! stateA {})
       (reset! gamesA {})
-      (reset! gameA {}))
+      (reset! gameA {})
+      (reset! settingsA {:editor? false}))
 
     (SwingUtilities/invokeLater
      (reify Runnable
        (run [_]
 
-         (doto jframe
-           (.add root-panel)
-           (.addComponentListener (let []
-                                    (reify ComponentListener
-                                      (componentHidden [_ event])
-                                      (componentMoved [_ event])
-                                      (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
-                                      (componentShown [_ event])))))
+            (doto jframe
+              (.add jroot-panel)
+              (.addComponentListener (let []
+                                       (reify ComponentListener
+                                         (componentHidden [_ event])
+                                         (componentMoved [_ event])
+                                         (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
+                                         (componentShown [_ event])))))
 
-         (doto root-panel
-           #_(.setLayout (BoxLayout. root-panel BoxLayout/Y_AXIS))
-           (.setLayout (MigLayout. "insets 10"
-                                   "[grow,shrink,fill]"
-                                   "[grow,shrink,fill]")))
+            (doto jroot-panel
+              #_(.setLayout (BoxLayout. jroot-panel BoxLayout/Y_AXIS))
+              (.setLayout (MigLayout. "insets 10"
+                                      "[grow,shrink,fill]"
+                                      "[grow,shrink,fill]")))
 
-         (when-let [url (Wichita.java.io/resource "icon.png")]
-           (.setIconImage jframe (.getImage (ImageIcon. url))))
+            (when-let [url (Wichita.java.io/resource "icon.png")]
+              (.setIconImage jframe (.getImage (ImageIcon. url))))
 
-         (Cara-Dune.microwaved-potatoes/menubar-process
-          {:jmenubar jmenubar
-           :jframe jframe
-           :menubar| ops|})
-         (.setJMenuBar jframe jmenubar)
+            (Cara-Dune.microwaved-potatoes/menubar-process
+             {:jmenubar jmenubar
+              :jframe jframe
+              :menubar| ops|})
+            (.setJMenuBar jframe jmenubar)
 
-         #_(Cara-Dune.microwaved-potatoes/toolbar-process
-            {:jtoolbar jtoolbar})
-         #_(.add root-panel jtoolbar "dock north")
+            #_(Cara-Dune.microwaved-potatoes/toolbar-process
+               {:jtoolbar jtoolbar})
+            #_(.add jroot-panel jtoolbar "dock north")
 
-         (Cara-Dune.beans/editor-process
-          {:ns-sym 'Cara-Dune.main
-           :eval| eval|
-           :jcode-panel jcode-panel
-           :jrepl jrepl
-           :joutput joutput
-           :joutput-scroll joutput-scroll
-           :jeditor jeditor
-           :jeditor-scroll jeditor-scroll})
-         (.add root-panel jcode-panel "dock west")
+            (Cara-Dune.beans/editor-process
+             {:ns-sym 'Cara-Dune.main
+              :eval| eval|
+              :jcode-panel jcode-panel
+              :jrepl jrepl
+              :joutput joutput
+              :joutput-scroll joutput-scroll
+              :jeditor jeditor
+              :jeditor-scroll jeditor-scroll})
+            #_(.add jroot-panel jcode-panel "dock west")
 
-         (Cara-Dune.kiwis/canvas-process
-          {:jcanvas-panel jcanvas-panel
-           :canvas canvas})
-         (.add root-panel jcanvas-panel "dock east,width 50%!, height 1:100%:")
+            (Cara-Dune.kiwis/canvas-process
+             {:jcanvas-panel jcanvas-panel
+              :canvas canvas})
+            (.add jroot-panel jcanvas-panel "dock east,width 50%:100%:100%, height 1:100%:")
 
-         (.setPreferredSize jframe
-                            (let [size (-> (Toolkit/getDefaultToolkit) (.getScreenSize))]
-                              (Dimension. (UIScale/scale 1024) (UIScale/scale 576)))
-                            #_(if SystemInfo/isJava_9_orLater
-                                (Dimension. 830 440)
-                                (Dimension. 1660 880)))
+            (.setPreferredSize jframe
+                               (let [size (-> (Toolkit/getDefaultToolkit) (.getScreenSize))]
+                                 (Dimension. (UIScale/scale 1024) (UIScale/scale 576)))
+                               #_(if SystemInfo/isJava_9_orLater
+                                   (Dimension. 830 440)
+                                   (Dimension. 1660 880)))
 
-         #_(doto jframe
-             (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
-             (.setSize 2400 1600)
-             (.setLocation 1300 200)
-             #_(.add panel)
-             (.setVisible true))
+            #_(doto jframe
+                (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+                (.setSize 2400 1600)
+                (.setLocation 1300 200)
+                #_(.add panel)
+                (.setVisible true))
 
-         #_(println :before (.getGraphics canvas))
-         (doto jframe
-           (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
-           (.pack)
-           (.setLocationRelativeTo nil)
-           (.setVisible true))
-         #_(println :after (.getGraphics canvas))
+            #_(println :before (.getGraphics canvas))
+            (doto jframe
+              (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+              (.pack)
+              (.setLocationRelativeTo nil)
+              (.setVisible true))
+            #_(println :after (.getGraphics canvas))
 
-         (alter-var-root #'Cara-Dune.main/jframe (constantly jframe))
-         (alter-var-root #'Cara-Dune.main/joutput-scroll (constantly joutput-scroll))
-         (alter-var-root #'Cara-Dune.main/jrepl (constantly jrepl))
-         (alter-var-root #'Cara-Dune.main/joutput (constantly joutput))
-         (alter-var-root #'Cara-Dune.main/jeditor (constantly jeditor))
-         (alter-var-root #'Cara-Dune.main/canvas (constantly canvas))
-         (alter-var-root #'Cara-Dune.main/graphics (constantly (.getGraphics canvas)))
+            (alter-var-root #'Cara-Dune.main/jframe (constantly jframe))
+            (alter-var-root #'Cara-Dune.main/joutput-scroll (constantly joutput-scroll))
+            (alter-var-root #'Cara-Dune.main/jrepl (constantly jrepl))
+            (alter-var-root #'Cara-Dune.main/joutput (constantly joutput))
+            (alter-var-root #'Cara-Dune.main/jeditor (constantly jeditor))
+            (alter-var-root #'Cara-Dune.main/canvas (constantly canvas))
+            (alter-var-root #'Cara-Dune.main/graphics (constantly (.getGraphics canvas)))
+            (alter-var-root #'Cara-Dune.main/jroot-panel (constantly jroot-panel))
+            (alter-var-root #'Cara-Dune.main/jcode-panel (constantly jcode-panel))
 
+            (remove-watch stateA :watch-fn)
+            (add-watch stateA :watch-fn
+                       (fn [ref wathc-key old-state new-state]
 
-         (remove-watch stateA :watch-fn)
-         (add-watch stateA :watch-fn
-                    (fn [ref wathc-key old-state new-state]
+                         (when (not= old-state new-state)
+                           (put! canvas-draw| true))))
 
-                      (when (not= old-state new-state)
-                        (put! canvas-draw| true))))
+            (remove-watch settingsA :main)
+            (add-watch settingsA :main
+                       (fn [ref wathc-key old-state new-state]
+                         (SwingUtilities/invokeLater
+                          (reify Runnable
+                            (run [_]
+                              (if (:editor? @settingsA)
+                                (.add jroot-panel jcode-panel "dock west")
+                                (.remove jroot-panel jcode-panel))
+                              (force-resize))))))
+            (reset! settingsA @settingsA)
 
-         (do
-           (->>
-            '(let [locations| (->
-                               [{:row 1 :col 1}
-                                {:row 3 :col 3}
-                                {:row (rand-int 10) :col (rand-int 10)}
-                                {:row (rand-int 10) :col (rand-int 10)}
-                                {:row (rand-int 10) :col (rand-int 10)}
-                                {:row (rand-int 10) :col (rand-int 10)}]
-                               (to-chan!))]
-               (go
-                 (loop []
-                   (when-let [value (<! locations|)]
-                     (<! (timeout 1000))
-                     (clear-canvas)
-                     (draw-grid)
-                     (draw-line)
-                     (draw-word)
-                     (draw-Cara value)
-                     (recur)))))
-            (Wichita.pprint/pprint)
-            (with-out-str)
-            #_(Joker.core/reformat-string)
-            (.setText jeditor))
+            (do
+              (->>
+               '(let [locations| (->
+                                  [{:row 1 :col 1}
+                                   {:row 3 :col 3}
+                                   {:row (rand-int 10) :col (rand-int 10)}
+                                   {:row (rand-int 10) :col (rand-int 10)}
+                                   {:row (rand-int 10) :col (rand-int 10)}
+                                   {:row (rand-int 10) :col (rand-int 10)}]
+                                  (to-chan!))]
+                  (go
+                    (loop []
+                      (when-let [value (<! locations|)]
+                        (<! (timeout 1000))
+                        (clear-canvas)
+                        (draw-grid)
+                        (draw-line)
+                        (draw-word)
+                        (draw-Cara value)
+                        (recur)))))
+               (Wichita.pprint/pprint)
+               (with-out-str)
+               #_(Joker.core/reformat-string)
+               (.setText jeditor))
 
-           (.setText jrepl "(transmit)")
+              (.setText jrepl "(transmit)")
 
-           (force-resize)
+              (force-resize)
 
-           #_(go
-               (<! (timeout 50))
-               (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
+              #_(go
+                  (<! (timeout 50))
+                  (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
 
 
     (go
@@ -453,6 +472,18 @@
                 :gameA gameA
                 :stateA stateA})
               (reset! gameA @gameA))
+
+            :settings
+            (let [settings-jframe (JFrame. "settings")]
+              (Cara-Dune.microwaved-potatoes/settings-process
+               {:jframe settings-jframe
+                :root-jframe jframe
+                :ops| ops|
+                :settingsA settingsA}))
+
+            :settings-value
+            (let []
+              (swap! settingsA merge value))
 
             :host-yes
             (let [{:keys [frequency]} value]

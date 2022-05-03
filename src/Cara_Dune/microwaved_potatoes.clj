@@ -13,7 +13,7 @@
   (:import
    (javax.swing JFrame WindowConstants ImageIcon JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
-   (javax.swing DefaultListSelectionModel)
+   (javax.swing DefaultListSelectionModel JCheckBox)
    (javax.swing.border EmptyBorder)
    (javax.swing.table DefaultTableModel)
    (javax.swing.event DocumentListener DocumentEvent ListSelectionListener ListSelectionEvent)
@@ -88,7 +88,9 @@
                       (.setText "settings")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \S)
-                      (.addActionListener on-menu-item-show-dialog)))
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! menubar| {:op :settings}))))))
               (.add (doto (JMenuItem.)
                       (.setText "exit")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_Q (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
@@ -347,6 +349,57 @@
                                  ^"[Ljava.lang.Object;"
                                  column-names))))
             (recur))))
+
+    (doto jframe
+      (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+      (.pack)
+      (.setLocationRelativeTo root-jframe)
+      (.setVisible true)))
+  nil)
+
+(defn settings-process
+  [{:keys [^JFrame root-jframe
+           ^JFrame jframe
+           ops|
+           settingsA]
+    :or {}
+    :as opts}]
+  (let [root-panel (JPanel.)
+        jscroll-pane (JScrollPane.)
+
+        jcheckbox-editor (JCheckBox.)]
+
+    (doto jscroll-pane
+      (.setViewportView root-panel)
+      (.setHorizontalScrollBarPolicy ScrollPaneConstants/HORIZONTAL_SCROLLBAR_NEVER))
+
+    (doto jframe
+      (.add root-panel))
+
+    (doto root-panel
+      (.setLayout (MigLayout. "insets 10"))
+      (.add (JLabel. ":editor?") "cell 0 0")
+      (.add jcheckbox-editor "cell 0 0"))
+
+    (.setPreferredSize jframe (Dimension. (* 0.8 (.getWidth root-jframe))
+                                          (* 0.8 (.getHeight root-jframe))))
+
+    (.addActionListener jcheckbox-editor
+                        (reify ActionListener
+                          (actionPerformed [_ event]
+                            (SwingUtilities/invokeLater
+                             (reify Runnable
+                               (run [_]
+                                    (put! ops| {:op :settings-value
+                                                :editor? (.isSelected jcheckbox-editor)})))))))
+
+    (remove-watch settingsA :settings-process)
+    (add-watch settingsA :settings-process
+               (fn [ref wathc-key old-state new-state]
+                 (SwingUtilities/invokeLater
+                  (reify Runnable
+                    (run [_]
+                      (.setSelected jcheckbox-editor (:editor? new-state)))))))
 
     (doto jframe
       (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
