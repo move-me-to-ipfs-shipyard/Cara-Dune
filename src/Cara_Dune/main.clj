@@ -79,9 +79,9 @@
 (def ^:const grid-cols 16)
 
 (defn draw-word
-  "draw word"
+  "draw Word"
   []
-  (.drawString graphics "word" (* 0.5 (.getWidth canvas)) (* 0.5 (.getHeight canvas))))
+  (.drawString graphics "Word" (* 0.5 (.getWidth canvas)) (* 0.5 (.getHeight canvas))))
 
 (defn draw-line
   "draw line"
