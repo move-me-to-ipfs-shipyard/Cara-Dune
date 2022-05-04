@@ -3,7 +3,7 @@
 repl(){
   clj \
     -J-Dclojure.core.async.pool-size=1 \
-    -X:repl Ripley.core/process \
+    -X:Ripley Ripley.core/process \
     :main-ns Cara-Dune.main
 }
 
@@ -17,14 +17,14 @@ main(){
 jar(){
 
   clojure \
-    -X:identicon Zazu.core/process \
+    -X:Zazu Zazu.core/process \
     :word '"Cara-Dune"' \
     :filename '"out/identicon/icon.png"' \
     :size 256
 
   rm -rf out/*.jar
   clojure \
-    -X:uberjar Genie.core/process \
+    -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$(git rev-parse --short HEAD).jar\"" \
     :paths '["src"]'
@@ -32,6 +32,25 @@ jar(){
 
 release(){
   jar
+}
+
+ui(){
+  # watch release
+  npm i --no-package-lock
+  mkdir -p out/resources/ui/
+  cp src/Cara_Dune/index.html out/resources/ui/index.html
+  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli $1 ui main
+}
+
+ui-repl(){
+  npm i --no-package-lock
+  mkdir -p out/resources/ui/
+  cp src/Cara_Dune/index.html out/resources/ui/index.html
+  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli clj-repl
+  # (shadow/watch :main)
+  # (shadow/watch :ui)
+  # (shadow/repl :main)
+  # :repl/quit
 }
 
 "$@"
