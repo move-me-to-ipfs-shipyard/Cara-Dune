@@ -29,7 +29,7 @@
 (defonce ^:const PORT 3000)
 (def server (express))
 
-(.use server (.static express "out/resources/ui"))
+(.use server (.static express "ui"))
 
 (.listen server 3000
          (fn []
