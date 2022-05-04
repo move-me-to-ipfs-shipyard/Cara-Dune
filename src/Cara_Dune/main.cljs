@@ -31,10 +31,14 @@
 
 (.use server (.static express "ui"))
 
+(.get server "*" (fn [request response]
+                   (.sendFile response (.join path js/__dirname  "ui" "index.html"))))
+
 (.listen server 3000
          (fn []
            (js/console.log (format "server started on %s" PORT))))
 
 (defn -main []
+  (println "one X-Wing? great - we're saved")
   (println "i dont want my next job")
   (println "Kuiil has spoken"))
