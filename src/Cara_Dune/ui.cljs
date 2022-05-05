@@ -12,7 +12,18 @@
    [goog.string.format :as format]
    [goog.string :refer [format]]
    [goog.object]
-   [cljs.reader :refer [read-string]]))
+   [cljs.reader :refer [read-string]]
+
+   ["react" :as Pacha]
+   ["react-dom/client" :as Pacha.dom.client]
+   [reagent.core :as Kuzco.core]
+
+   [Cara-Dune.peanuts]
+   [Cara-Dune.kiwis]))
+
+(defonce matchA (Kuzco.core/atom nil))
+(defonce stateA (Kuzco.core/atom {}))
+(defonce Pacha-dom-root (Pacha.dom.client/createRoot (.getElementById js/document "ui")))
 
 (defn -main
   []
@@ -22,8 +33,14 @@
     (println ":Madison you though i was a zombie?")
     (println ":Columbus yeah, of course - a zombie")
     (println ":Madison oh my God, no - i dont even eat meat - i'm a vegatarian - vegan actually")
-    (set! (.-innerHTML (.getElementById js/document "ui"))
-          ":Co-Pilot i saw your planet destroyed - i was on the Death Star
-:_ which one?")))
+    #_(set! (.-innerHTML (.getElementById js/document "ui"))
+            ":Co-Pilot i saw your planet destroyed - i was on the Death Star :_ which one?")
+    (Cara-Dune.kiwis/ui-process {:Pacha-dom-root Pacha-dom-root
+                                 :matchA matchA
+                                 :stateA stateA})))
 
-(-main)
+(defn reload
+  []
+  (swap! stateA assoc :rand-int (rand-int 10000)))
+
+#_(-main)
