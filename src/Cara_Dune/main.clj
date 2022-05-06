@@ -202,7 +202,7 @@
       (reset! stateA {})
       (reset! gamesA {})
       (reset! gameA {})
-      (reset! settingsA {:editor? false}))
+      (reset! settingsA {:editor? true}))
 
     (SwingUtilities/invokeLater
      (reify Runnable
