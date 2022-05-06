@@ -5,7 +5,7 @@
         :host "0.0.0.0"}
  :builds {:main {:target #_:node-library :node-script
                  :main Cara-Dune.main/-main
-                 :output-to "out/jar/main.js"
+                 :output-to "out/main.js"
                  :compiler-options {:optimizations #_:advanced :simple
                                         ;;  :dump-core false
                                     :stable-names true
@@ -25,10 +25,10 @@
                             :after-load Cara-Dune.ui/reload}}
 
           :ui {:target :browser
-               :output-dir "out/jar/ui"
+               :output-dir "out/resources/ui"
                :asset-path "./"
                :module-loader true
-               :modules {:ui {:entries [Cara-Dune.ui]}}
+               :modules {:main {:entries [Cara-Dune.ui]}}
                :compiler-options {:infer-externs   false #_:auto
                                   :closure-warnings {:global-this :off}
                                   :closure-defines  {"Cara-Dune.ui.some-var" true}
@@ -37,5 +37,5 @@
                           :repl-pprint true
                           :autobuild true
                           :devtools-url "http://localhost:9630"
-                          :http-root  "out/jar/ui"
+                          :http-root  "out/resources/ui"
                           :http-port  #shadow/env ["SHADOWCLJS_DEVTOOLS_HTTP_PORT" :as :int :default 9500]}}}}

@@ -1,38 +1,56 @@
 #!/bin/bash
 
 repl(){
-  npm i --no-package-lock
-  mkdir -p out/jar/ui/
-  cp src/Cara_Dune/index.html out/jar/ui/index.html
-  cp package.json out/jar/package.json
-  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli clj-repl
-  # (shadow/watch :main)
-  # (shadow/watch :ui)
-  # (shadow/repl :main)
-  # :repl/quit
+  clj \
+    -J-Dclojure.core.async.pool-size=1 \
+    -X:Ripley Ripley.core/process \
+    :main-ns Cara-Dune.main
 }
 
-shadow(){
-  # watch release
-  npm i --no-package-lock
-  mkdir -p out/jar/ui/
-  cp src/Cara_Dune/index.html out/jar/ui/index.html
-  cp package.json out/jar/package.json
-  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli $1 ui main
+
+main(){
+  clojure \
+    -J-Dclojure.core.async.pool-size=1 \
+    -M -m Cara-Dune.main
 }
 
 jar(){
-  rm -rf out
-  shadow release
-  COMMIT_HASH=$(git rev-parse --short HEAD)
-  cd out/jar
-  zip -r ../Cara-Dune-$COMMIT_HASH.zip ./ && \
-  cd ../../
+
+  clojure \
+    -X:Zazu Zazu.core/process \
+    :word '"Cara-Dune"' \
+    :filename '"out/identicon/icon.png"' \
+    :size 256
+
+  rm -rf out/*.jar
+  clojure \
+    -X:Genie Genie.core/process \
+    :main-ns Cara-Dune.main \
+    :filename "\"out/Cara-Dune-$(git rev-parse --short HEAD).jar\"" \
+    :paths '["src"]'
 }
 
 release(){
   jar
 }
 
+ui(){
+  # watch release
+  npm i --no-package-lock
+  mkdir -p out/resources/ui/
+  cp src/Cara_Dune/index.html out/resources/ui/index.html
+  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli $1 ui main
+}
+
+ui-repl(){
+  npm i --no-package-lock
+  mkdir -p out/resources/ui/
+  cp src/Cara_Dune/index.html out/resources/ui/index.html
+  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli clj-repl
+  # (shadow/watch :main)
+  # (shadow/watch :ui)
+  # (shadow/repl :main)
+  # :repl/quit
+}
 
 "$@"
