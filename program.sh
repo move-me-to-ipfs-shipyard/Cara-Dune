@@ -14,6 +14,12 @@ main(){
     -M -m Cara-Dune.main
 }
 
+tag(){
+  COMMIT_HASH=$(git rev-parse --short HEAD)
+  COMMIT_COUNT=$(git rev-list --count HEAD)
+  git tag "$COMMIT_COUNT-$COMMIT_HASH" $COMMIT_HASH 
+}
+
 jar(){
 
   clojure \
@@ -23,10 +29,12 @@ jar(){
     :size 256
 
   rm -rf out/*.jar
+  COMMIT_HASH=$(git rev-parse --short HEAD)
+  COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
     -X:uberjar Genie.core/process \
     :main-ns Cara-Dune.main \
-    :filename "\"out/Cara-Dune-$(git rev-parse --short HEAD).jar\"" \
+    :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
     :paths '["src"]'
 }
 
