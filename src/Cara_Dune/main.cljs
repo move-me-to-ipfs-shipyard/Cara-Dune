@@ -14,11 +14,10 @@
    [goog.object]
    [cljs.reader :refer [read-string]]
 
-   [sci.core :as Batty.core]
-   
    [Cara-Dune.drawing]
    [Cara-Dune.seed]
    [Cara-Dune.raisins]
+   [Cara-Dune.peanuts]
    [Cara-Dune.microwaved-potatoes]
    [Cara-Dune.corn]
    [Cara-Dune.beans]))
@@ -27,24 +26,10 @@
 (defonce path (js/require "path"))
 (defonce express (js/require "express"))
 
-(defonce Batty-context (Batty.core/init {:namespaces {'foo.bar {'x 1}}}))
-
 (defonce ^:const PORT 3000)
 (def server (express))
-(def api (express.Router.))
-
-(.get api "/Little-Rock" (fn [request response]
-                           (go
-                             (<! (timeout 1000))
-                             (.send response (str {})))))
-
-(.get api "/Batty" (fn [request response]
-                     (go
-                       (<! (timeout 1000))
-                       (.send response (str (Batty.core/eval-string* Batty-context (.. request -query -eval)))))))
 
 (.use server (.static express "ui"))
-(.use server "/api" api)
 
 (.get server "*" (fn [request response]
                    (.sendFile response (.join path js/__dirname  "ui" "index.html"))))
