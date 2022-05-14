@@ -13,7 +13,13 @@
         clj-http/clj-http {:mvn/version "3.12.3"}
         cheshire/cheshire {:mvn/version "5.10.2"}
         cljfmt/cljfmt {:mvn/version "0.8.0"}
-        
+
+        metosin/reitit {:mvn/version "0.5.16"}
+        manifold/manifold {:mvn/version "0.1.9"}
+        org.clj-commons/byte-streams {:mvn/version "0.2.8"}
+        aleph/aleph {:mvn/version "0.4.7-alpha7"}
+        ring/ring-jetty-adapter {:mvn/version "1.7.1"}
+
         com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}}
 
  :aliases
