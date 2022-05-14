@@ -17,7 +17,10 @@ main(){
 tag(){
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
-  git tag "$COMMIT_COUNT-$COMMIT_HASH" $COMMIT_HASH 
+  TAG="$COMMIT_COUNT-$COMMIT_HASH"
+  git tag $TAG $COMMIT_HASH
+  echo $COMMIT_HASH
+  echo $TAG
 }
 
 jar(){
