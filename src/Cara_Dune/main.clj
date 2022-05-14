@@ -90,7 +90,7 @@
 
 (defn draw-grid
   []
-  (Cara-Dune.kiwis/draw-grid
+  (Cara-Dune.peanuts/draw-grid
    {:canvas canvas
     :graphics graphics
     :grid-rows grid-rows
@@ -226,13 +226,13 @@
             (when-let [url (Wichita.java.io/resource "icon.png")]
               (.setIconImage jframe (.getImage (ImageIcon. url))))
 
-            (Cara-Dune.microwaved-potatoes/menubar-process
+            (Cara-Dune.kiwis/menubar-process
              {:jmenubar jmenubar
               :jframe jframe
               :menubar| ops|})
             (.setJMenuBar jframe jmenubar)
 
-            #_(Cara-Dune.microwaved-potatoes/toolbar-process
+            #_(Cara-Dune.kiwis/toolbar-process
                {:jtoolbar jtoolbar})
             #_(.add jroot-panel jtoolbar "dock north")
 
@@ -247,7 +247,7 @@
               :jeditor-scroll jeditor-scroll})
             #_(.add jroot-panel jcode-panel "dock west")
 
-            (Cara-Dune.kiwis/canvas-process
+            (Cara-Dune.peanuts/canvas-process
              {:jcanvas-panel jcanvas-panel
               :canvas canvas})
             (.add jroot-panel jcanvas-panel "dock east,width 50%:100%:100%, height 1:100%:")
@@ -464,7 +464,7 @@
 
             :discover
             (let [discover-jframe (JFrame. "discover")]
-              (Cara-Dune.microwaved-potatoes/discover-process
+              (Cara-Dune.kiwis/discover-process
                {:jframe discover-jframe
                 :root-jframe jframe
                 :ops| ops|
@@ -475,7 +475,7 @@
 
             :settings
             (let [settings-jframe (JFrame. "settings")]
-              (Cara-Dune.microwaved-potatoes/settings-process
+              (Cara-Dune.kiwis/settings-process
                {:jframe settings-jframe
                 :root-jframe jframe
                 :ops| ops|
