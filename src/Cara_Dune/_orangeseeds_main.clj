@@ -1,4 +1,4 @@
-(ns Cara-Dune.kiwi-seeds
+#_(ns Cara-Dune.main
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout thread
@@ -9,8 +9,6 @@
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
    [clojure.repl :as Wichita.repl]
-
-
 
    [Cara-Dune.drawing]
    [Cara-Dune.seed]
@@ -104,8 +102,8 @@
 
       (.setJMenuBar jframe jmenubar))
 
-    (.add root-panel ^JPanel (Cara-Dune.orange-seeds/create-ui {:jframe jframe
-                                                                :resize| resize|}))
+    (.add root-panel ^JPanel (Cara-Dune.corn/create-ui {:jframe jframe
+                                                        :resize| resize|}))
 
     (when-let [url (Wichita.java.io/resource "icon.png")]
       (.setIconImage jframe (.getImage (ImageIcon. url))))

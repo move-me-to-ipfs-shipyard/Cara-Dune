@@ -156,7 +156,7 @@
           topic (Cara-Dune.ipfs-http/encode-base64url-u "raisins")
           id (-> ipfs (.id) (.get "ID"))
           sub| (Cara-Dune.ipfs-http/pubsub-sub base-url  topic)]
-
+      
       (go
         (loop []
           (when-let [value (<! sub|)]
@@ -169,7 +169,7 @@
         (loop []
           (<! (timeout 2000))
           (Cara-Dune.ipfs-http/pubsub-pub base-url topic (str {:id id
-                                                           :rand-int (rand-int 100)}))
+                                                               :rand-int (rand-int 100)}))
           (recur))))))
 
 (comment
