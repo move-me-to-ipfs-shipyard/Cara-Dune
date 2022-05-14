@@ -12,6 +12,8 @@
    [clojure.pprint :as Wichita.pprint]
    [clojure.repl :as Wichita.repl]
    [cljfmt.core :as Joker.core]
+   
+   [aleph.http :as Simba.http]
 
    [Cara-Dune.drawing]
    [Cara-Dune.seed]
@@ -67,6 +69,7 @@
 (def ^:dynamic ^Graphics2D graphics nil)
 (def ^:dynamic ^JPanel jcode-panel nil)
 (def ^:dynamic ^JPanel jroot-panel nil)
+(def ^:dynamic raw-stream-connection-pool nil)
 
 #_(defonce *ns (find-ns 'Cara-Dune.main))
 
@@ -493,9 +496,13 @@
 
     (let [port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")
           ipfs-api-url (format "http://127.0.0.1:%s" port)
-          id| (chan 1)]
+          id| (chan 1)
+          raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
+      
+      (alter-var-root #'raw-stream-connection-pool (constantly raw-stream-connection-pool))
       (Cara-Dune.corn/subscribe-process
        {:sub| sub|
+        :raw-stream-connection-pool raw-stream-connection-pool
         :cancel| (chan (sliding-buffer 1))
         :frequency "raisins"
         :ipfs-api-url ipfs-api-url
