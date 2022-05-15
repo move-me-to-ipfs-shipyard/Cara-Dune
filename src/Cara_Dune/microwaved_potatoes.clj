@@ -129,9 +129,9 @@
 (defn process
   [{:keys [port host|]
     :as opts}]
-  (let [host (Simba.http/start-host (Simba.http/wrap-ring-async-handler #'host)
-                                        {:port port
-                                         :host "0.0.0.0"})]
+  (let [host (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'host)
+                                      {:port port
+                                       :host "0.0.0.0"})]
     (go
       (<! host|)
       (.close ^java.io.Closeable host)))

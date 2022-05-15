@@ -30,7 +30,10 @@ Karga asked me to finish his mission - host Mando on his quest - i will be multi
 i am not Mando
   i lack his no-compromise firmity
   but i am his host and thus will get his reward - be a free hungry-twitch-feeding true multiplayer game
-i will have mouse gameplay
+i will have programming lanugage gameplay
+  editor on the left and 2D canvas on the right ot reflect the state changing
+  this is exactly the new gameplay twitch streamers and players are hungry for, can compete and streamers
+  programming lanugage is most unlimited uncapped form of creation like writing
   i'll base the map on an episode from Mandalorian series - Believer
   and turn that into Top Gear interview - whole foods plant based bowl
   i will generate state and put it into Little-Rock's channels like sequence of events
@@ -42,7 +45,6 @@ i will have mouse gameplay
   and i put values to Mando's channel - and Mayfeld maybe here as well - so they move also
   so my moevement is partially a choice but more a stream of values
   and it's not me who is statinoary and processing events - rather us moving and stream being locations
-  player - will use mouse to clikc on those queues to take values
 i will not use Conquiztador or Heroes III or games alike - a different game - as i said, i am not Mando
 i will take best from
   IPFS - run alongside IFPS node and use http-api for pubsub mutliplayer networking - Karga already gave me the datastick
