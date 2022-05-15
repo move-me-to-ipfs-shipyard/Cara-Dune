@@ -38,7 +38,7 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src"]'
+    :paths '["src" "out/identicon"]'
 }
 
 release(){
