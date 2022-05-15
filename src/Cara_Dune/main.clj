@@ -61,7 +61,7 @@
 (defonce ops| (chan 10))
 (defonce table| (chan (sliding-buffer 10)))
 (defonce sub| (chan (sliding-buffer 10)))
-(defonce server| (chan 1))
+(defonce host| (chan 1))
 (def ^:dynamic ^JFrame jframe nil)
 (def ^:dynamic ^Canvas canvas nil)
 (def ^:dynamic ^JTextArea jrepl nil)
@@ -225,7 +225,7 @@
                                     (windowClosing [event]
                                       (let [event ^WindowEvent event]
                                         #_(println :window-closing)
-                                        (put! server| true)
+                                        (put! host| true)
                                         (-> event (.getWindow) (.dispose)))))))
 
             (doto jroot-panel
@@ -522,5 +522,5 @@
                    3344)]
       (Cara-Dune.microwaved-potatoes/process
        {:port port
-        :server| server|})))
+        :host| host|})))
   (println "Kuiil has spoken"))

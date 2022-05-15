@@ -32,7 +32,7 @@
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
-(def server
+(def host
   (Yzma.http/ring-handler
    (Yzma.http/router
     [#_["/*" (Yzma.Sauron/create-file-handler
@@ -127,14 +127,14 @@
    {:executor Yzma.interceptor.Chicha/executor}))
 
 (defn process
-  [{:keys [port server|]
+  [{:keys [port host|]
     :as opts}]
-  (let [server (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
+  (let [host (Simba.http/start-host (Simba.http/wrap-ring-async-handler #'host)
                                         {:port port
                                          :host "0.0.0.0"})]
     (go
-      (<! server|)
-      (.close ^java.io.Closeable server)))
+      (<! host|)
+      (.close ^java.io.Closeable host)))
   (println ":_ Mandalorian isn't a race")
   (println ":Mando it's a Creed")
   (println (format "http://localhost:%s" port)))

@@ -8,7 +8,7 @@
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
-   [clj-http.client :as Timon.client]
+   [clj-http.guest :as Timon.guest]
    [cheshire.core :as Cheshire-Cat.core]
 
    [Cara-Dune.seed])
@@ -38,7 +38,7 @@
     (thread
       (try
         (let [request (->
-                       (Timon.client/post
+                       (Timon.guest/post
                         (str base-url "/api/v0/pubsub/sub")
                         {:query-params {:arg topic}
                          :as :reader}
@@ -61,7 +61,7 @@
 (defn pubsub-pub
   [base-url topic message]
   (let [response (->
-                  (Timon.client/post
+                  (Timon.guest/post
                    (str base-url "/api/v0/pubsub/pub")
                    {:query-params {:arg topic}
                     :async? true
