@@ -3,7 +3,7 @@
 repl(){
   clj \
     -J-Dclojure.core.async.pool-size=1 \
-    -X:repl Ripley.core/process \
+    -X:Ripley Ripley.core/process \
     :main-ns Cara-Dune.main
 }
 
@@ -26,7 +26,7 @@ tag(){
 jar(){
 
   clojure \
-    -X:identicon Zazu.core/process \
+    -X:Zazu Zazu.core/process \
     :word '"Cara-Dune"' \
     :filename '"out/identicon/icon.png"' \
     :size 256
@@ -35,7 +35,7 @@ jar(){
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
-    -X:uberjar Genie.core/process \
+    -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
     :paths '["src"]'
