@@ -419,14 +419,20 @@
           (condp = (:op value)
             :game
             (let [{:keys [frequency role]} value
-
-                  games-topic "raisins"
-                  game-topic frequency
+                  id| (chan 1)
+                  port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")
+                  ipfs-api-url (format "http://127.0.0.1:%s" port)
+                  games-topic (Cara-Dune.corn/encode-base64url-u "raisins")
+                  game-topic (Cara-Dune.corn/encode-base64url-u frequency)
                   _ (Cara-Dune.corn/subscribe-process
                      {:sub| sub|
                       :cancel| cancel-sub|
-                      :frequency frequency})
-                  host? (= role :host)]
+                      :frequency frequency
+                      :ipfs-api-url ipfs-api-url
+                      :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
+                      :id| id|})
+                  host? (= role :host)
+                  {:keys [peer-id]} (<! id|)]
               #_(println :game value)
               (go
                 (loop []
@@ -436,8 +442,21 @@
 
                     (timeout 2000)
                     ([_]
-                     (when host?)
+                     (when host?
+                       (Cara-Dune.corn/pubsub-pub
+                        ipfs-api-url games-topic (str {:op :games
+                                                       :timestamp (.getTime (java.util.Date.))
+                                                       :frequency frequency
+                                                       :host-peer-id peer-id}))
+                       (Cara-Dune.corn/pubsub-pub
+                        ipfs-api-url game-topic (str {:op :game-state
+                                                      :timestamp (.getTime (java.util.Date.))
+                                                      :game-state {:host-peer-id peer-id}})))
 
+                     (Cara-Dune.corn/pubsub-pub
+                      ipfs-api-url game-topic (str {:op :player-state
+                                                    :timestamp (.getTime (java.util.Date.))
+                                                    :peer-id peer-id}))
                      (recur))))))
 
             :leave
@@ -475,14 +494,20 @@
 
           (recur))))
 
-    (let [raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
+    (let [port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")
+          ipfs-api-url (format "http://127.0.0.1:%s" port)
+          id| (chan 1)
+          raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
       
       (alter-var-root #'raw-stream-connection-pool (constantly raw-stream-connection-pool))
       (Cara-Dune.corn/subscribe-process
        {:sub| sub|
         :raw-stream-connection-pool raw-stream-connection-pool
         :cancel| (chan (sliding-buffer 1))
-        :frequency "raisins"}))
+        :frequency "raisins"
+        :ipfs-api-url ipfs-api-url
+        :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
+        :id| id|}))
 
     (let [port (or (try (Integer/parseInt (System/getenv "PORT"))
                         (catch Exception e nil))

@@ -18,7 +18,9 @@
         manifold/manifold {:mvn/version "0.1.9"}
         org.clj-commons/byte-streams {:mvn/version "0.2.8"}
         aleph/aleph {:mvn/version "0.4.7-alpha7"}
-        ring/ring-jetty-adapter {:mvn/version "1.7.1"}}
+        ring/ring-jetty-adapter {:mvn/version "1.7.1"}
+
+        com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}}
 
  :aliases
  {:Ripley {:extra-deps {Ripley/Ripley {:git/url "https://github.com/Empire-Strikes-Back/Ripley"

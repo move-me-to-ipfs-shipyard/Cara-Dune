@@ -1,4 +1,4 @@
-(ns Cara-Dune.corn
+#_(ns Cara-Dune.corn
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout thread
@@ -8,12 +8,8 @@
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
+   [clj-http.client :as Timon.client]
    [cheshire.core :as Cheshire-Cat.core]
-
-   [aleph.http :as Simba.http]
-   [manifold.deferred :as Nala.deferred]
-   [manifold.stream :as Nala.stream]
-   [byte-streams :as Rafiki]
 
    [Cara-Dune.seed])
   (:import
@@ -37,61 +33,51 @@
       (String. StandardCharsets/UTF_8)))
 
 (defn pubsub-sub
-  [base-url topic message| cancel| raw-stream-connection-pool]
-  (let [streamV (volatile! nil)]
-    (->
-     (Nala.deferred/chain
-      (Simba.http/post (str base-url "/api/v0/pubsub/sub")
-                       {:query-params {:arg topic}
-                        :pool raw-stream-connection-pool})
-      :body
-      (fn [stream]
-        (vreset! streamV stream)
-        stream)
-      #(Nala.stream/map Rafiki/to-string %)
-      (fn [stream]
-        (Nala.deferred/loop
-         []
-          (->
-           (Nala.stream/take! stream :none)
-           (Nala.deferred/chain
-            (fn [message-string]
-              (when-not (identical? message-string :none)
-                (let [message (Cheshire-Cat.core/parse-string message-string true)]
-                  #_(println :message message)
-                  (put! message| message))
-                (Nala.deferred/recur))))
-           (Nala.deferred/catch Exception (fn [ex] (println ex)))))))
-     (Nala.deferred/catch Exception (fn [ex] (println ex))))
-
-    (go
-      (<! cancel|)
-      (Nala.stream/close! @streamV))
+  [base-url topic out| cancel|]
+  (let []
+    (thread
+      (try
+        (let [request (->
+                       (Timon.client/post
+                        (str base-url "/api/v0/pubsub/sub")
+                        {:query-params {:arg topic}
+                         :as :reader}
+                        #_(fn [response]
+                            (println (type (:body response)))
+                            #_(with-open [reader (:body response)]
+                                (let [])))
+                        #_(fn [ex] (println "exception message is: " (.getMessage ex)))))
+              ^BufferedReader reader (:body request)
+              messages (Cheshire-Cat.core/parsed-seq reader true)]
+          (go
+            (<! cancel|)
+            (.close ^org.apache.http.impl.client.InternalHttpClient
+             (:http-client request)))
+          (doseq [message messages]
+            (put! out| message)))
+        (catch Exception ex (println ['org.apache.http.impl.client.InternalHttpClient :closed-with-execption]))))
     nil))
 
 (defn pubsub-pub
   [base-url topic message]
-  (let []
-
-    (->
-     (Nala.deferred/chain
-      (Simba.http/post (str base-url "/api/v0/pubsub/pub")
-                       {:query-params {:arg topic}
-                        :multipart [{:name "file" :content message}]})
-      :body
-      Rafiki/to-string
-      (fn [response-string] #_(println :repsponse reresponse-stringsponse)))
-     (Nala.deferred/catch
-      Exception
-      (fn [ex] (println ex))))
-
+  (let [response (->
+                  (Timon.client/post
+                   (str base-url "/api/v0/pubsub/pub")
+                   {:query-params {:arg topic}
+                    :async? true
+                    :multipart [#_{:name "title" :content "message"}
+                                #_{:name "Content/Type" :content "text/plain"}
+                                {:name "file" :content message}]}
+                   (fn [response]
+                     #_(println (= (:status response) 200))
+                     #_(put! out| (Cheshire-Cat.core/parse-string (:body response) true)))
+                   (fn [ex] (println "exception message is: " (ex-message ex)))))]
     nil))
 
 (defn subscribe-process
   [{:keys [^String ipfs-api-multiaddress
            ^String ipfs-api-url
            frequency
-           raw-stream-connection-pool
            sub|
            cancel|
            id|]
@@ -100,16 +86,14 @@
         base-url ipfs-api-url
         topic (encode-base64url-u frequency)
         id (-> ipfs (.id) (.get "ID"))
-        message| (chan (sliding-buffer 10))]
+        out| (chan (sliding-buffer 10))]
     (put! id| {:peer-id id})
-    (pubsub-sub base-url  topic message| cancel| raw-stream-connection-pool)
+    (pubsub-sub base-url  topic out| cancel|)
 
     (go
       (loop []
-        (when-let [value (<! message|)]
+        (when-let [value (<! out|)]
           (put! sub| (merge value
-                            {:message (-> (:data value) (decode-base64url-u) (read-string))}))
-          #_(println (merge value
                             {:message (-> (:data value) (decode-base64url-u) (read-string))}))
           #_(when-not (= (:from value) id)
 
