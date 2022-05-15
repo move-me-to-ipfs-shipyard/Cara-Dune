@@ -28,7 +28,8 @@
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JTextPane)
    (javax.swing.border EmptyBorder)
    (java.awt Canvas Graphics Graphics2D Shape Color Polygon Dimension BasicStroke Toolkit Insets BorderLayout)
-   (java.awt.event KeyListener KeyEvent MouseListener MouseEvent ActionListener ActionEvent ComponentListener ComponentEvent)
+   (java.awt.event KeyListener KeyEvent MouseListener MouseEvent ActionListener ActionEvent ComponentListener ComponentEvent )
+   (java.awt.event  WindowListener WindowAdapter WindowEvent)
    (java.awt.geom Ellipse2D Ellipse2D$Double Point2D$Double)
    (com.formdev.flatlaf FlatLaf FlatLightLaf)
    (com.formdev.flatlaf.extras FlatUIDefaultsInspector FlatDesktop FlatDesktop$QuitResponse FlatSVGIcon)
@@ -60,6 +61,7 @@
 (defonce ops| (chan 10))
 (defonce table| (chan (sliding-buffer 10)))
 (defonce sub| (chan (sliding-buffer 10)))
+(defonce server| (chan 1))
 (def ^:dynamic ^JFrame jframe nil)
 (def ^:dynamic ^Canvas canvas nil)
 (def ^:dynamic ^JTextArea jrepl nil)
@@ -218,7 +220,13 @@
                                          (componentHidden [_ event])
                                          (componentMoved [_ event])
                                          (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
-                                         (componentShown [_ event])))))
+                                         (componentShown [_ event]))))
+              (.addWindowListener (proxy [WindowAdapter] []
+                                    (windowClosing [event]
+                                      (let [event ^WindowEvent event]
+                                        #_(println :window-closing)
+                                        (put! server| true)
+                                        (-> event (.getWindow) (.dispose)))))))
 
             (doto jroot-panel
               #_(.setLayout (BoxLayout. jroot-panel BoxLayout/Y_AXIS))
@@ -513,5 +521,6 @@
                         (catch Exception e nil))
                    3344)]
       (Cara-Dune.microwaved-potatoes/process
-       {:port port})))
+       {:port port
+        :server| server|})))
   (println "Kuiil has spoken"))

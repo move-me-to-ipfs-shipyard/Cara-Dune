@@ -127,11 +127,14 @@
    {:executor Yzma.interceptor.Chicha/executor}))
 
 (defn process
-  [{:keys [port]
+  [{:keys [port server|]
     :as opts}]
-  (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
-                           {:port port
-                            :host "0.0.0.0"})
+  (let [server (Simba.http/start-server (Simba.http/wrap-ring-async-handler #'server)
+                                        {:port port
+                                         :host "0.0.0.0"})]
+    (go
+      (<! server|)
+      (.close ^java.io.Closeable server)))
   (println ":_ Mandalorian isn't a race")
   (println ":Mando it's a Creed")
   (println (format "http://localhost:%s" port)))
