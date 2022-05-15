@@ -47,7 +47,7 @@ i will have programming lanugage gameplay
   and it's not me who is statinoary and processing events - rather us moving and stream being locations
 i will not use Conquiztador or Heroes III or games alike - a different game - as i said, i am not Mando
 i will take best from
-  IPFS - run alongside IFPS node and use http-api for pubsub mutliplayer networking - Karga already gave me the datastick
+  IPFS - pubsub for mutliplayer networking - Karga already gave me the datastick
   Voobly - give players ability to host and find games
   Starcraft - be a competitive game users will choose for tournaments
 i will be desktop - as if that needs clarifying when one drops onto programming-a-program battlefield
@@ -73,9 +73,6 @@ i am no project - like Eowyn is no man - i am one program
   i will provide healthy Djokovic-Federer-Nadal competition
   while staying focused on the mission - be peer-to-peer remake-derived multiplayer game for twitch users
   don't want to rule Navaro or found another guild - too many rulers not enough rebel-program-droppers
-i will IPFS for networking
-  simple as Game Changers - it already works and can be served in vegan jar of beskar parens ( )
-  and user only needs to - install java, install-run IPFS Desktop, run my .jar
 i need a repository named Cara-Dune - in my commits i speak for myself - do to it this
   run git init -b main - no masters
   add .gitconfig file with
