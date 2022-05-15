@@ -220,7 +220,13 @@
                                       (componentHidden [_ event])
                                       (componentMoved [_ event])
                                       (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
-                                      (componentShown [_ event])))))
+                                      (componentShown [_ event]))))
+           (.addWindowListener (proxy [WindowAdapter] []
+                                 (windowClosing [event]
+                                   (let [event ^WindowEvent event]
+                                     #_(println :window-closing)
+                                     (put! host| true)
+                                     (-> event (.getWindow) (.dispose)))))))
 
          (doto jroot-panel
            #_(.setLayout (BoxLayout. jroot-panel BoxLayout/Y_AXIS))
