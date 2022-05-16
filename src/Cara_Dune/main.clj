@@ -490,7 +490,8 @@
                {:jframe settings-jframe
                 :root-jframe jframe
                 :ops| ops|
-                :settingsA settingsA}))
+                :settingsA settingsA})
+              (reset! settingsA @settingsA))
 
             :settings-value
             (let []
