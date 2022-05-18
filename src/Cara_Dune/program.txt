@@ -74,9 +74,18 @@ i am no project - like Eowyn is no man - i am one program
   i will provide healthy Djokovic-Federer-Nadal competition
   while staying focused on the mission - be peer-to-peer remake-derived multiplayer game for twitch users
   don't want to rule Navaro or found another guild - too many rulers not enough rebel-program-droppers
-i will IPFS for networking
+i will not use IPFS Dekstop for networking
   simple as Game Changers - it already works and can be served in vegan jar of beskar parens ( )
   and user only needs to - install java, install-run IPFS Desktop, run my .jar
+i will use ipfs js libraries - run as electorn dekstop program
+  i am an interview - a bowl, not a special or dish
+  i am a bounty - so i will be run as electron desktop program
+  it's whole vegam, but less than jar 
+  this is the clear speration line - clojure and .jar for the garden, needs freedom 
+  clojurescript and js - for bounty hunting
+  but both - dekstop beskar-parens-() dht pure-pubsub 
+i will ise IPFS DEkstop electron installation and updates mechanism
+  i will do the unholy - add github ci and compile and update just like IPFS DEsktop does
 i need a repository named Cara-Dune - in my commits i speak for myself - do to it this
   run git init -b main - no masters
   add .gitconfig file with
