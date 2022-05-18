@@ -20,6 +20,7 @@
    [Cara-Dune.raisins]
    [Cara-Dune.peanuts]
    [Cara-Dune.kiwis]
+   [Cara-Dune.salt]
    [Cara-Dune.microwaved-potatoes]
    [Cara-Dune.corn]
    [Cara-Dune.beans])
@@ -247,7 +248,7 @@
             {:jtoolbar jtoolbar})
          #_(.add jroot-panel jtoolbar "dock north")
 
-         (Cara-Dune.beans/editor-process
+         (Cara-Dune.salt/editor-process
           {:ns-sym 'Cara-Dune.main
            :eval| eval|
            :jcode-panel jcode-panel
@@ -345,7 +346,7 @@
 
            #_(go
                (<! (timeout 50))
-               (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
+               (Cara-Dune.salt/print-ns-fns-docs 'Cara-Dune.main eval|))))))
 
 
     (go
