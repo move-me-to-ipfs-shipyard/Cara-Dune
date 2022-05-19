@@ -1,15 +1,13 @@
 (ns Cara-Dune.seed
   (:require
    [clojure.core.async :as Little-Rock
-    :refer [chan put! take! close! offer! to-chan! timeout
+    :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
+   [clojure.java.io :as Wichita.java.io]
    [clojure.string :as Wichita.string]
-   [cljs.core.async.impl.protocols :refer [closed?]]
-   [cljs.core.async.interop :refer-macros [<p!]]
-   [goog.string.format :as format]
-   [goog.string :refer [format]]
-   [goog.object]
-   [cljs.reader :refer [read-string]]))
+   [clojure.repl :as Wichita.repl]))
+
+(do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
