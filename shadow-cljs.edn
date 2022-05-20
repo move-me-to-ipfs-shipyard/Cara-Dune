@@ -19,24 +19,4 @@
                           :after-load Cara-Dune.ui/reload
                           :devtools-url "http://localhost:9630"
                           :http-root  "out/ui"
-                          :http-port  #shadow/env ["SHADOWCLJS_DEVTOOLS_HTTP_PORT" :as :int :default 9500]}}
-
-          :corn {:target #_:node-library :node-script
-                 :main Cara-Dune.corn/-main
-                 :output-to "out/corn/corn.js"
-                 :compiler-options {:optimizations #_:advanced :simple
-                                    #_:dump-core #_false
-                                    :stable-names true
-                                    :infer-externs   false #_:auto
-                                    :recompile-dependents true
-                                    :source-maps true
-                                    #_:verbose #_true
-                                    :closure-defines {}
-                                    :warnings {:fn-deprecated false}}
-                 :js-options {:js-provider :shadow
-                              :keep-native-requires true
-                              :keep-as-require #{}}
-                 :devtools {:repl-init-ns Cara-Dune.corn
-                            :repl-pprint true
-                            :autobuild true
-                            :devtools-url "http://localhost:9630"}}}}
+                          :http-port  #shadow/env ["SHADOWCLJS_DEVTOOLS_HTTP_PORT" :as :int :default 9500]}}}}

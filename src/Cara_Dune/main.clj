@@ -16,6 +16,7 @@
 
    [Cara-Dune.seed]
    [Cara-Dune.microwaved-potatoes]
+   [Cara-Dune.corn]
    [Cara-Dune.beans])
   (:import
    (java.io File))
