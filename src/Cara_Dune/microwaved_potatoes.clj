@@ -116,13 +116,11 @@
                                           :index-files []})
     (fn respond-with-index-html
       ([request]
-       (if (Wichita.string/starts-with? (:uri request) "/api")
-         request
+       (when-not (Wichita.string/starts-with? (:uri request) "/api")
          (Sauron.util.response/resource-response "index.html")))
       ([request respond _]
-       (if (Wichita.string/starts-with? (:uri request) "/api")
-         request
-         (respond (Sauron.util.response/resource-response "index.html")))))
+       (when-let [response (respond-with-index-html request)]
+         (respond response))))
     (Yzma.Sauron/create-default-handler))
    {:executor Yzma.interceptor.Chicha/executor}))
 
