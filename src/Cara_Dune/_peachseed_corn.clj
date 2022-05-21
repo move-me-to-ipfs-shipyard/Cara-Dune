@@ -1,4 +1,4 @@
-(ns Cara-Dune.corn
+#_(ns Cara-Dune.corn
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout thread
@@ -127,6 +127,22 @@
 
 (comment
 
+  (let [port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")
+        ipfs-api-url (format "http://127.0.0.1:%s" port)
+        id| (chan 1)
+        raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
+
+    (alter-var-root #'raw-stream-connection-pool (constantly raw-stream-connection-pool))
+    (Cara-Dune.corn/subscribe-process
+     {:sub| sub|
+      :raw-stream-connection-pool raw-stream-connection-pool
+      :cancel| (chan (sliding-buffer 1))
+      :frequency "raisins"
+      :ipfs-api-url ipfs-api-url
+      :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
+      :id| id|}))
+
+
   (go
     (loop []
       (when-let [{:keys [message from] :as value} (<! sub|)]
@@ -147,20 +163,6 @@
       (<! (timeout 3000))
       (let [expired (into []
                           (comp
-                           (keep (fn [[frequency {:keys [timestamp]}]]
-                                   #_(println (- (.getTime (java.util.Date.)) timestamp))
-                                   (when-not (< (- (.getTime (java.util.Date.)) timestamp) 4000)
-                                     frequency))))
-                          @gamesA)]
-        (when-not (empty? expired)
-          (apply swap! gamesA dissoc expired)))
-      (recur)))
-
-  (go
-    (loop []
-      (<! (timeout 3000))
-      (let [expired (into []
-                          (comp
                            (keep (fn [[frequency {:keys [timestamp peer-id]}]]
                                    #_(println (- (.getTime (java.util.Date.)) timestamp))
                                    (when-not (< (- (.getTime (java.util.Date.)) timestamp) 4000)
@@ -172,12 +174,28 @@
 
   (go
     (loop []
+      (<! (timeout 3000))
+      (let [expired (into []
+                          (comp
+                           (keep (fn [[frequency {:keys [timestamp]}]]
+                                   #_(println (- (.getTime (java.util.Date.)) timestamp))
+                                   (when-not (< (- (.getTime (java.util.Date.)) timestamp) 4000)
+                                     frequency))))
+                          @gamesA)]
+        (when-not (empty? expired)
+          (apply swap! gamesA dissoc expired)))
+      (recur)))
+
+
+
+  (go
+    (loop []
       (when-let [value (<! ops|)]
         (condp = (:op value)
           :game
           (let [{:keys [frequency role]} value
                 id| (chan 1)
-                port (or (System/getenv "Jar_Jar_IPFS_PORT") "5001")
+                port (or (System/getenv "CARA_DUNE_IPFS_PORT") "5001")
                 ipfs-api-url (format "http://127.0.0.1:%s" port)
                 games-topic (Cara-Dune.corn/encode-base64url-u "raisins")
                 game-topic (Cara-Dune.corn/encode-base64url-u frequency)
@@ -252,22 +270,6 @@
 
         (recur))))
 
-
-
-  (let [port (or (System/getenv "Jar_Jar_IPFS_PORT") "5001")
-        ipfs-api-url (format "http://127.0.0.1:%s" port)
-        id| (chan 1)
-        raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
-
-    (alter-var-root #'raw-stream-connection-pool (constantly raw-stream-connection-pool))
-    (Cara-Dune.corn/subscribe-process
-     {:sub| sub|
-      :raw-stream-connection-pool raw-stream-connection-pool
-      :cancel| (chan (sliding-buffer 1))
-      :frequency "raisins"
-      :ipfs-api-url ipfs-api-url
-      :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
-      :id| id|}))
 
   ;
   )

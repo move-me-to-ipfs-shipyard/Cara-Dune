@@ -1,4 +1,4 @@
-(ns Cara-Dune.microwaved-potatoes
+(ns Cara-Dune.raisins
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout thread
@@ -7,11 +7,6 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string])
-  (:gen-class))
+   [clojure.string :as Wichita.string]))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
-
-(defn process
-  [{:keys []
-    :as opts}])

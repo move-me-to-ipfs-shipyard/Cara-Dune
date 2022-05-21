@@ -25,6 +25,12 @@ tag(){
 
 jar(){
 
+  clojure \
+    -X:Zazu Zazu.core/process \
+    :word '"Cara-Dune"' \
+    :filename '"out/identicon/icon.png"' \
+    :size 256
+
   rm -rf out/*.jar
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
@@ -32,36 +38,10 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui" "data"]'
-}
-
-Moana(){
-  clojure -A:Moana:ui -M -m shadow.cljs.devtools.cli "$@"
-}
-
-ui_install(){
-  npm i --no-package-lock
-  mkdir -p out/ui/
-  cp src/Cara_Dune/index.html out/ui/index.html
-  cp src/Cara_Dune/style.css out/ui/style.css
-}
-
-ui_repl(){
-  ui_install
-  Moana clj-repl
-  # (shadow/watch :ui)
-  # (shadow/repl :ui)
-  # :repl/quit
-}
-
-ui_release(){
-  ui_install
-  Moana release :ui
+    :paths '["src" "out/identicon"]'
 }
 
 release(){
-  rm -rf out
-  ui_release
   jar
 }
 
