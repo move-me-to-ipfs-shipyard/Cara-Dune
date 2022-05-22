@@ -367,7 +367,7 @@
   (let [root-panel (JPanel.)
         jscroll-pane (JScrollPane.)
 
-        jcheckbox-editor (JCheckBox.)]
+        jcheckbox-apricotseed (JCheckBox.)]
 
     (doto jscroll-pane
       (.setViewportView root-panel)
@@ -378,20 +378,20 @@
 
     (doto root-panel
       (.setLayout (MigLayout. "insets 10"))
-      (.add (JLabel. ":editor?") "cell 0 0")
-      (.add jcheckbox-editor "cell 0 0"))
+      (.add (JLabel. ":apricotseed?") "cell 0 0")
+      #_(.add jcheckbox-apricotseed "cell 0 0"))
 
     (.setPreferredSize jframe (Dimension. (* 0.8 (.getWidth root-jframe))
                                           (* 0.8 (.getHeight root-jframe))))
 
-    (.addActionListener jcheckbox-editor
+    (.addActionListener jcheckbox-apricotseed
                         (reify ActionListener
                           (actionPerformed [_ event]
                             (SwingUtilities/invokeLater
                              (reify Runnable
                                (run [_]
-                                    (put! ops| {:op :settings-value
-                                                :editor? (.isSelected jcheckbox-editor)})))))))
+                                 (put! ops| {:op :settings-value
+                                             :_ (.isSelected jcheckbox-apricotseed)})))))))
 
     (remove-watch settingsA :settings-process)
     (add-watch settingsA :settings-process
@@ -399,7 +399,7 @@
                  (SwingUtilities/invokeLater
                   (reify Runnable
                     (run [_]
-                      (.setSelected jcheckbox-editor (:editor? new-state)))))))
+                      (.setSelected jcheckbox-apricotseed (:apricotseed? new-state)))))))
 
     (doto jframe
       (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
