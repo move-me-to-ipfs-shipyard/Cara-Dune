@@ -1055,7 +1055,8 @@
 
             (.setPreferredSize jframe
                                (let [size (-> (Toolkit/getDefaultToolkit) (.getScreenSize))]
-                                 (Dimension. (UIScale/scale 1024) (UIScale/scale 576)))
+                                 (Dimension. (* 0.7 (.getWidth size)) (* 0.7 (.getHeight size)))
+                                 #_(Dimension. (UIScale/scale 1024) (UIScale/scale 576)))
                                #_(if SystemInfo/isJava_9_orLater
                                    (Dimension. 830 440)
                                    (Dimension. 1660 880)))
