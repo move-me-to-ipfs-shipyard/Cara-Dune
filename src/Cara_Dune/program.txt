@@ -57,7 +57,8 @@ i will be desktop - as if that needs clarifying when one drops onto programming-
   and traps in another new browser-like limited prison
   with no keyboard but young-Forrest-Gump-greesy-fingers touch-screen tunnel
   no need for mobile devices ever - a light laptop is better in every situation giving a person a true keyboard 
-  and honor of unabridged writing and programming 
+  and honor of unabridged writing and programming
+i will be terminal program with jvm runtime and browser ui
 i will have users and identity
   but i will not store data in distributed way - i am not Mando
   i will do my best without cooking - i am in assmble-only mode
