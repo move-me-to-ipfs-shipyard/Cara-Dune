@@ -30,7 +30,7 @@ Karga asked me to finish his mission - host Mando on his quest - i will be multi
 i am not Mando
   i lack his no-compromise firmity
   but i am his host and thus will get his reward - be a free hungry-twitch-feeding true multiplayer game
-i will have programming lanugage with mouse gameplay
+i will not have programming lanugage with mouse gameplay
   player can choose to just use mouse or both or just progamming language gameplay
   editor on the left and 2D canvas on the right ot reflect the state changing
   this is exactly the new gameplay twitch streamers and players are hungry for, can compete and streamers
@@ -46,6 +46,10 @@ i will have programming lanugage with mouse gameplay
   and i put values to Mando's channel - and Mayfeld maybe here as well - so they move also
   so my moevement is partially a choice but more a stream of values
   and it's not me who is statinoary and processing events - rather us moving and stream being locations
+i will not have programming language gameplay
+    you dont shoot a movie while watching it
+    and you dont grow a fruit while eating it
+    mouse and keyboard
 i will not use Conquiztador or Heroes III or games alike - a different game - as i said, i am not Mando
 i will take best from
   IPFS - run alongside IFPS node and use http-api for pubsub mutliplayer networking - Karga already gave me the datastick

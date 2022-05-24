@@ -57,8 +57,6 @@
 (defonce ops| (chan (sliding-buffer 10)))
 (defonce Pacha-dom-root (Pacha.dom.client/createRoot (.getElementById js/document "ui")))
 
-
-
 (def ^:const box-size 32)
 (def ^:const rows 16)
 (def ^:const cols 16)
@@ -113,9 +111,6 @@
   [:> (.-Content ThemeSongGuyLayout)
    {:style {:background-color "white"}}
    [:> ThemeSongGuyRow
-    #_[:> ThemeSongGuyCol
-       {:flex 1}
-       [Cara-Dune.salt/rc-editor]]
     [:> ThemeSongGuyCol
      {:flex 1}
      [rc-game match stateA ops|]]]])
