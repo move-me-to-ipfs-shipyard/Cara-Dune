@@ -1,18 +1,44 @@
 #!/bin/bash
 
+
+install(){
+  npm i --no-package-lock
+  mkdir -p out/jar/ui/
+  mkdir -p out/jar/src/Cara-Dune/
+  cp src/Cara_Dune/index.html out/jar/ui/index.html
+  cp src/Cara_Dune/style.css out/jar/ui/style.css
+  cp package.json out/jar/package.json
+}
+
+Moana(){
+  clj -A:Moana:main:ui -M -m shadow.cljs.devtools.cli "$@"
+}
+
 repl(){
-  clj \
-    -J-Dclojure.core.async.pool-size=1 \
-    -X:Ripley Ripley.core/process \
-    :main-ns Cara-Dune.main
+  install
+  Moana clj-repl
+  # (shadow/watch :main)
+  # (shadow/watch :ui)
+  # (shadow/repl :main)
+  # :repl/quit
 }
 
-
-main(){
-  clojure \
-    -J-Dclojure.core.async.pool-size=1 \
-    -M -m Cara-Dune.main
+jar(){
+  rm -rf out
+  install
+  Moana release :main :ui
+  COMMIT_HASH=$(git rev-parse --short HEAD)
+  COMMIT_COUNT=$(git rev-list --count HEAD)
+  echo Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip
+  cd out/jar
+  zip -r ../Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip ./ && \
+  cd ../../
 }
+
+release(){
+  jar
+}
+
 
 tag(){
   COMMIT_HASH=$(git rev-parse --short HEAD)
@@ -21,48 +47,6 @@ tag(){
   git tag $TAG $COMMIT_HASH
   echo $COMMIT_HASH
   echo $TAG
-}
-
-jar(){
-
-  rm -rf out/*.jar
-  COMMIT_HASH=$(git rev-parse --short HEAD)
-  COMMIT_COUNT=$(git rev-list --count HEAD)
-  clojure \
-    -X:Genie Genie.core/process \
-    :main-ns Cara-Dune.main \
-    :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui" "data"]'
-}
-
-Moana(){
-  clojure -A:Moana:ui -M -m shadow.cljs.devtools.cli "$@"
-}
-
-ui_install(){
-  npm i --no-package-lock
-  mkdir -p out/ui/
-  cp src/Cara_Dune/index.html out/ui/index.html
-  cp src/Cara_Dune/style.css out/ui/style.css
-}
-
-ui_repl(){
-  ui_install
-  Moana clj-repl
-  # (shadow/watch :ui)
-  # (shadow/repl :ui)
-  # :repl/quit
-}
-
-ui_release(){
-  ui_install
-  Moana release :ui
-}
-
-release(){
-  rm -rf out
-  ui_release
-  jar
 }
 
 "$@"
