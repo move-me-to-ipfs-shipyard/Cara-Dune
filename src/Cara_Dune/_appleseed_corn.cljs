@@ -1,12 +1,12 @@
 (ns Cara-Dune.corn
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.string :as Wichita.string]
+   [clojure.string]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [goog.string.format]
@@ -17,16 +17,16 @@
 (defonce os (js/require "os"))
 (defonce fs (js/require "fs"))
 (defonce path (js/require "path"))
-(defonce Luna-Lovegood (js/require "express"))
+(defonce express (js/require "express"))
 (set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
 (set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
-(defonce Beeblebrox (js/require "orbit-db"))
-(defonce John-Connor-http-client (js/require "ipfs-http-client"))
-(defonce John-Connor (js/require "ipfs"))
+(defonce OrbitDB (js/require "orbit-db"))
+(defonce ipfs-http-client (js/require "ipfs-http-client"))
+(defonce IPFS (js/require "ipfs"))
 
 (defonce ^:const port 3345)
-(def host (Luna-Lovegood))
-(def api (Luna-Lovegood.Router.))
+(def host (express))
+(def api (express.Router.))
 
 (.get api "/Little-Rock" (fn [request response]
                            (go
@@ -49,32 +49,23 @@
       (println (format "http://localhost:%s" port))
       (println "i dont want my next job")
       (println "Kuiil has spoken")
-      (let [john-connor (<p! (.create John-Connor
-                                      (clj->js
-                                       {:repo (.join path (.homedir os) ".Cara-Dune" "John-Connor")})))
-            beeblebrox (<p!
-                        (->
-                         (.createInstance
-                          Beeblebrox john-connor
-                          (clj->js
-                           {"directory" (.join path (.homedir os) ".Cara-Dune" "Beeblebrox")}))
-                         (.catch (fn [ex]
-                                   (println ex)))))]
-        (println (.. beeblebrox -identity -id))))))
+      (let [ipfs (.create ipfs-http-client "http://127.0.0.1:5001")
+            orbit-db (<p!
+                      (->
+                       (.createInstance
+                        OrbitDB ipfs
+                        (clj->js
+                         {"directory" (.join path (.homedir os) ".Cara-Dune" "orbit-db")}))
+                       (.catch (fn [ex]
+                                 (println ex)))))]
+        (println (.. orbit-db -identity -id))))))
 
 
 (comment
 
-  (let [john-connor (.create John-Connor-http-client "http://127.0.0.1:5001")
-        beeblebrox (<p!
-                    (->
-                     (.createInstance
-                      Beeblebrox ipfs
-                      (clj->js
-                       {"directory" (.join path (.homedir os) ".Cara-Dune" "Beeblebrox")}))
-                     (.catch (fn [ex]
-                               (println ex)))))]
-    (println (.. beeblebrox -identity -id)))
+  (<p! (.create IPFS
+                (clj->js
+                 {:repo (.join path (.homedir os) ".Cara-Dune" "ipfs")})))
 
   ;
   )

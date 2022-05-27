@@ -1,13 +1,13 @@
 (ns Cara-Dune.ui-corn
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.string :as Wichita.string]
-   [clojure.pprint :as Wichita.pprint]
+   [clojure.string]
+   [clojure.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [goog.string.format]
@@ -16,23 +16,23 @@
    [cljs.reader :refer [read-string]]
    [goog.events]
 
-   ["react" :as Pacha]
-   ["react-dom/client" :as Pacha.dom.client]
+   ["react" :as react]
+   ["react-dom/client" :as react-dom.client]
 
-   [reagent.core :as Kuzco.core]
-   [reagent.dom :as Kuzco.dom]
+   [reagent.core]
+   [reagent.dom]
 
-   ["antd/lib/layout" :default ThemeSongGuyLayout]
-   ["antd/lib/menu" :default ThemeSongGuyMenu]
-   ["antd/lib/button" :default ThemeSongGuyButton]
-   ["antd/lib/row" :default ThemeSongGuyRow]
-   ["antd/lib/col" :default ThemeSongGuyCol]
-   ["antd/lib/input" :default ThemeSongGuyInput]
-   ["antd/lib/table" :default ThemeSongGuyTable]
+   ["antd/lib/layout" :default AntdLayout]
+   ["antd/lib/menu" :default AntdMenu]
+   ["antd/lib/button" :default AntdButton]
+   ["antd/lib/row" :default AntdRow]
+   ["antd/lib/col" :default AntdCol]
+   ["antd/lib/input" :default AntdInput]
+   ["antd/lib/table" :default AntdTable]
 
 
-   [clojure.test.check.generators :as Pawny.generators]
-   [clojure.spec.alpha :as Wichita.spec]
+   [clojure.test.check.generators]
+   [clojure.spec.alpha :as s]
 
    [Cara-Dune.ui-seed :refer [root op]]))
 
@@ -42,12 +42,12 @@
 
 (defn rc-tab
   []
-  (Kuzco.core/with-let
-    [dataA (Kuzco.core/cursor (:stateA root) [:simple-double-full])]
-    [:> (.-Content ThemeSongGuyLayout)
+  (reagent.core/with-let
+    [dataA (reagent.core/cursor (:stateA root) [:simple-double-full])]
+    [:> (.-Content AntdLayout)
      {:style {:background-color "white"}}
-     [:> ThemeSongGuyRow
-      [:> ThemeSongGuyTable
+     [:> AntdRow
+      [:> AntdTable
        {:size "small"
         :style {:width "100%"
                 :height "80%"}

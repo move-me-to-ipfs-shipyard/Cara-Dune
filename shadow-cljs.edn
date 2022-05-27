@@ -7,16 +7,16 @@
                :output-dir "out/ui"
                :asset-path "./"
                :module-loader true
-               :modules {:ui {:entries [Cara-Dune.ui]
-                              :init-fn Cara-Dune.ui/-main}}
+               :modules {:ui-main {:entries [Cara-Dune.ui-main]
+                                   :init-fn Cara-Dune.ui-main/-main}}
                :compiler-options {:infer-externs   false #_:auto
                                   :closure-warnings {:global-this :off}
-                                  :closure-defines  {"Cara-Dune.ui.some-var" true}
+                                  :closure-defines  {"Cara-Dune.ui-main.some-var" true}
                                   :warnings {:fn-deprecated false}}
-               :devtools {:repl-init-ns Cara-Dune.ui
+               :devtools {:repl-init-ns Cara-Dune.ui-main
                           :repl-pprint true
                           :autobuild true
-                          :after-load Cara-Dune.ui/reload
+                          :after-load Cara-Dune.ui-main/reload
                           :devtools-url "http://localhost:9630"
                           :http-root  "out/ui"
                           :http-port  #shadow/env ["SHADOWCLJS_DEVTOOLS_HTTP_PORT" :as :int :default 9500]}}}}

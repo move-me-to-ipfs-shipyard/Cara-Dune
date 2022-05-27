@@ -1,13 +1,13 @@
-(ns Cara-Dune.ui
+(ns Cara-Dune.ui-main
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.string :as Wichita.string]
-   [clojure.pprint :as Wichita.pprint]
+   [clojure.string]
+   [clojure.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [goog.string.format]
@@ -16,23 +16,23 @@
    [cljs.reader :refer [read-string]]
    [goog.events]
 
-   ["react" :as Pacha]
-   ["react-dom/client" :as Pacha.dom.client]
+   ["react" :as react]
+   ["react-dom/client" :as react-dom.client]
 
-   [reagent.core :as Kuzco.core]
-   [reagent.dom :as Kuzco.dom]
+   [reagent.core]
+   [reagent.dom]
 
-   ["antd/lib/layout" :default ThemeSongGuyLayout]
-   ["antd/lib/menu" :default ThemeSongGuyMenu]
-   ["antd/lib/button" :default ThemeSongGuyButton]
-   ["antd/lib/row" :default ThemeSongGuyRow]
-   ["antd/lib/col" :default ThemeSongGuyCol]
-   ["antd/lib/input" :default ThemeSongGuyInput]
-   ["antd/lib/table" :default ThemeSongGuyTable]
-   ["antd/lib/tabs" :default ThemeSongGuyTabs]
+   ["antd/lib/layout" :default AntdLayout]
+   ["antd/lib/menu" :default AntdMenu]
+   ["antd/lib/button" :default AntdButton]
+   ["antd/lib/row" :default AntdRow]
+   ["antd/lib/col" :default AntdCol]
+   ["antd/lib/input" :default AntdInput]
+   ["antd/lib/table" :default AntdTable]
+   ["antd/lib/tabs" :default AntdTabs]
 
-   [clojure.test.check.generators :as Pawny.generators]
-   [clojure.spec.alpha :as Wichita.spec]
+   [clojure.test.check.generators]
+   [clojure.spec.alpha :as s]
 
    ["konva/lib/shapes/Rect"]
    ["konva" :default Konva]
@@ -65,7 +65,7 @@
 
 (defn rc-background-layer
   []
-  (Kuzco.core/with-let
+  (reagent.core/with-let
     []
     [:> (.-Layer ReactKonva)
      {:id "background-layer"}
@@ -80,7 +80,7 @@
 
 (defn rc-game
   [match stateA ops|]
-  (Kuzco.core/with-let
+  (reagent.core/with-let
     []
     [:> (.-Stage ReactKonva)
      {:width (* box-size cols)
@@ -94,7 +94,7 @@
 
 (defn rc-main-tab
   [match stateA ops|]
-  [:> (.-Content ThemeSongGuyLayout)
+  [:> (.-Content AntdLayout)
    {:style {:background-color "white"}}
    [:div {}
     [:div ":Co-Pilot i saw your planet destroyed - i was on the Death Star"]
@@ -102,18 +102,18 @@
 
 (defn rc-game-tab
   [match stateA ops|]
-  [:> (.-Content ThemeSongGuyLayout)
+  [:> (.-Content AntdLayout)
    {:style {:background-color "white"}}
-   [:> ThemeSongGuyRow
-    [:> ThemeSongGuyCol
+   [:> AntdRow
+    [:> AntdCol
      {:flex 1}
      [rc-game match stateA ops|]]]])
 
 (defn rc-settings-tab
   [match stateA ops|]
-  [:> (.-Content ThemeSongGuyLayout)
+  [:> (.-Content AntdLayout)
    {:style {:background-color "white"}}
-   [:> ThemeSongGuyRow
+   [:> AntdRow
     "settings"
     #_(str "settings" (:rand-int @stateA))]])
 
@@ -141,14 +141,14 @@
 
 (defn rc-ui
   []
-  [:> (.-Content ThemeSongGuyLayout)
+  [:> (.-Content AntdLayout)
    {:style {:background-color "white"}}
-   [:> ThemeSongGuyTabs
+   [:> AntdTabs
     {:size "small"}
-    [:>  (.-TabPane ThemeSongGuyTabs)
+    [:>  (.-TabPane AntdTabs)
      {:tab "discover" :key :rc-discover-tab}
      [Cara-Dune.ui-corn/rc-tab]]
-    [:>  (.-TabPane ThemeSongGuyTabs)
+    [:>  (.-TabPane AntdTabs)
      {:tab "game" :key :rc-game-tab}
      [rc-game-tab]]]])
 
@@ -157,7 +157,7 @@
 (defmethod op :ping
   [value]
   (go
-    (Wichita.pprint/pprint value)
+    (clojure.pprint/pprint value)
     (put! (:program-send| root) {:op :pong
                                  :from :ui
                                  :moneybuster :Jesus})))
@@ -165,7 +165,7 @@
 (defmethod op :pong
   [value]
   (go
-    (Wichita.pprint/pprint value)))
+    (clojure.pprint/pprint value)))
 
 (defn ops-process
   [{:keys []
@@ -187,17 +187,17 @@
     #_(set! (.-innerHTML (.getElementById js/document "ui"))
             ":Co-Pilot i saw your planet destroyed - i was on the Death Star :_ which one?")
     (ops-process {})
-    (.render @(:dom-rootA root) (Kuzco.core/as-element [rc-ui]))
+    (.render @(:dom-rootA root) (reagent.core/as-element [rc-ui]))
     (websocket-process {:send| (:program-send| root)
                         :recv| (:ops| root)})
-    #_(Yzma.frontend.easy/push-state :rc-main-tab)))
+    #_(reitit.frontend.easy/push-state :rc-main-tab)))
 
 (defn reload
   []
   (when-let [dom-root @(:dom-rootA root)]
     (.unmount dom-root)
-    (let [new-dom-root (Pacha.dom.client/createRoot (.getElementById js/document "ui"))]
+    (let [new-dom-root (react-dom.client/createRoot (.getElementById js/document "ui"))]
       (reset! (:dom-rootA root) new-dom-root)
-      (.render @(:dom-rootA root) (Kuzco.core/as-element [rc-ui])))))
+      (.render @(:dom-rootA root) (reagent.core/as-element [rc-ui])))))
 
 #_(-main)

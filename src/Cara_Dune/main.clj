@@ -1,22 +1,22 @@
 (ns Cara-Dune.main
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.core.async.impl.protocols :refer [closed?]]
-   [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string]
-   [clojure.pprint :as Wichita.pprint]
-   [clojure.repl :as Wichita.repl]
+   [clojure.java.io]
+   [clojure.string]
+   [clojure.pprint]
+   [clojure.repl]
 
-   [aleph.http :as Simba.http]
-   [manifold.deferred :as Nala.deferred]
-   [manifold.stream :as Nala.stream]
-   [byte-streams :as Rafiki]
-   [cheshire.core :as Cheshire-Cat.core]
+   [aleph.http]
+   [manifold.deferred]
+   [manifold.stream]
+   [byte-streams]
+   [cheshire.core]
 
    [Cara-Dune.seed :refer [root op]]
    [Cara-Dune.host]
@@ -67,33 +67,33 @@
   [base-url topic message| cancel| raw-stream-connection-pool]
   (let [streamV (volatile! nil)]
     (->
-     (Nala.deferred/chain
-      (Simba.http/post (str base-url "/api/v0/pubsub/sub")
+     (manifold.deferred/chain
+      (aleph.http/post (str base-url "/api/v0/pubsub/sub")
                        {:query-params {:arg topic}
                         :pool raw-stream-connection-pool})
       :body
       (fn [stream]
         (vreset! streamV stream)
         stream)
-      #(Nala.stream/map Rafiki/to-string %)
+      #(manifold.stream/map byte-streams/to-string %)
       (fn [stream]
-        (Nala.deferred/loop
+        (manifold.deferred/loop
          []
           (->
-           (Nala.stream/take! stream :none)
-           (Nala.deferred/chain
+           (manifold.stream/take! stream :none)
+           (manifold.deferred/chain
             (fn [message-string]
               (when-not (identical? message-string :none)
-                (let [message (Cheshire-Cat.core/parse-string message-string true)]
+                (let [message (cheshire.core/parse-string message-string true)]
                   #_(println :message message)
                   (put! message| message))
-                (Nala.deferred/recur))))
-           (Nala.deferred/catch Exception (fn [ex] (println ex)))))))
-     (Nala.deferred/catch Exception (fn [ex] (println ex))))
+                (manifold.deferred/recur))))
+           (manifold.deferred/catch Exception (fn [ex] (println ex)))))))
+     (manifold.deferred/catch Exception (fn [ex] (println ex))))
 
     (go
       (<! cancel|)
-      (Nala.stream/close! @streamV))
+      (manifold.stream/close! @streamV))
     nil))
 
 (defn pubsub-pub
@@ -101,14 +101,14 @@
   (let []
 
     (->
-     (Nala.deferred/chain
-      (Simba.http/post (str base-url "/api/v0/pubsub/pub")
+     (manifold.deferred/chain
+      (aleph.http/post (str base-url "/api/v0/pubsub/pub")
                        {:query-params {:arg topic}
                         :multipart [{:name "file" :content message}]})
       :body
-      Rafiki/to-string
+      byte-streams/to-string
       (fn [response-string] #_(println :repsponse reresponse-stringsponse)))
-     (Nala.deferred/catch
+     (manifold.deferred/catch
       Exception
       (fn [ex] (println ex))))
 
@@ -154,7 +154,7 @@
 (defmethod op :ping
   [value]
   (go
-    (Wichita.pprint/pprint value)
+    (clojure.pprint/pprint value)
     (put! (:ui-send| root) {:op :pong
                             :from :program
                             :meatbuster :Jesus})))
@@ -162,7 +162,7 @@
 (defmethod op :pong
   [value]
   (go
-    (Wichita.pprint/pprint value)))
+    (clojure.pprint/pprint value)))
 
 (defmethod op :game
   [value]
@@ -257,7 +257,7 @@
   (println "Kuiil has spoken")
 
   (let []
-    (Wichita.java.io/make-parents (:program-data-dirpath root))
+    (clojure.java.io/make-parents (:program-data-dirpath root))
     (reset! (:stateA root) {})
 
     (remove-watch (:stateA root) :watch-fn)
@@ -323,7 +323,7 @@
   (let [port (or (System/getenv "Jar_Jar_IPFS_PORT") "5001")
         ipfs-api-url (format "http://127.0.0.1:%s" port)
         id| (chan 1)
-        raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
+        raw-stream-connection-pool (aleph.http/connection-pool {:connection-options {:raw-stream? true}})]
 
     (alter-var-root #'raw-stream-connection-pool (constantly raw-stream-connection-pool))
     (Cara-Dune.corn/subscribe-process

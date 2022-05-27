@@ -35,8 +35,8 @@ jar(){
     :paths '["src" "out/ui" "data"]'
 }
 
-Moana(){
-  clojure -A:Moana:ui -M -m shadow.cljs.devtools.cli "$@"
+shadow(){
+  clj -A:shadow:ui -M -m shadow.cljs.devtools.cli "$@"
 }
 
 ui_install(){
@@ -48,7 +48,7 @@ ui_install(){
 
 ui_repl(){
   ui_install
-  Moana clj-repl
+  shadow clj-repl
   # (shadow/watch :ui)
   # (shadow/repl :ui)
   # :repl/quit
@@ -56,7 +56,7 @@ ui_repl(){
 
 ui_release(){
   ui_install
-  Moana release :ui
+  shadow release :ui
 }
 
 release(){

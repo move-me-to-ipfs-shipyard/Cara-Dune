@@ -1,14 +1,14 @@
 (ns Cara-Dune.beans
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string]
-   [cheshire.core :as Cheshire-Cat.core]
+   [clojure.java.io]
+   [clojure.string]
+   [cheshire.core]
 
    [Cara-Dune.seed])
   (:import

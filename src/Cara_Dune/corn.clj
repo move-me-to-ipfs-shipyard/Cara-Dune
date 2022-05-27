@@ -1,19 +1,14 @@
 (ns Cara-Dune.corn
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string]
-   [cheshire.core :as Cheshire-Cat.core]
-
-   [aleph.http :as Simba.http]
-   [manifold.deferred :as Nala.deferred]
-   [manifold.stream :as Nala.stream]
-   [byte-streams :as Rafiki]
+   [clojure.java.io]
+   [clojure.string]
+   [cheshire.core]
 
    [Cara-Dune.seed])
   (:import
