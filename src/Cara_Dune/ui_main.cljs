@@ -19,8 +19,8 @@
    ["react" :as react]
    ["react-dom/client" :as react-dom.client]
 
-   [reagent.core]
-   [reagent.dom]
+   [reagent.core :as reagent.core]
+   [reagent.dom :as reagent.dom]
 
    ["antd/lib/layout" :default AntdLayout]
    ["antd/lib/menu" :default AntdMenu]
@@ -120,7 +120,7 @@
 (defn websocket-process
   [{:keys [send| recv|]
     :as opts}]
-  (let [socket (js/WebSocket. "ws://localhost:3344/ui")]
+  (let [socket (js/WebSocket. "ws://localhost:3344/ws")]
     (.addEventListener socket "open" (fn [event]
                                        (println :websocket-open)
                                        (put! send| {:op :ping
@@ -189,8 +189,7 @@
     (ops-process {})
     (.render @(:dom-rootA root) (reagent.core/as-element [rc-ui]))
     (websocket-process {:send| (:program-send| root)
-                        :recv| (:ops| root)})
-    #_(reitit.frontend.easy/push-state :rc-main-tab)))
+                        :recv| (:ops| root)})))
 
 (defn reload
   []
