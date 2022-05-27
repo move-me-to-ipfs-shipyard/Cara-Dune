@@ -10,7 +10,7 @@
    [clojure.pprint :as Wichita.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
-   [goog.string.format :as format]
+   [goog.string.format]
    [goog.string :refer [format]]
    [goog.object]
    [cljs.reader :refer [read-string]]
@@ -40,7 +40,7 @@
   [value]
   (println value))
 
-(defn rc-page
+(defn rc-tab
   []
   (Kuzco.core/with-let
     [dataA (Kuzco.core/cursor (:stateA root) [:simple-double-full])]

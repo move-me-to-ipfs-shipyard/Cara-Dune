@@ -10,7 +10,7 @@
    [clojure.pprint :as Wichita.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
-   [goog.string.format :as format]
+   [goog.string.format]
    [goog.string :refer [format]]
    [goog.object]
    [cljs.reader :refer [read-string]]
@@ -25,4 +25,4 @@
                  :stateA (Kuzco.core/atom {})
                  :ops| (chan (sliding-buffer 10))
                  :program-send| (chan 10)
-                 :Pacha-dom-root (Pacha.dom.client/createRoot (.getElementById js/document "ui"))}))
+                 :dom-rootA (atom (Pacha.dom.client/createRoot (.getElementById js/document "ui")))}))

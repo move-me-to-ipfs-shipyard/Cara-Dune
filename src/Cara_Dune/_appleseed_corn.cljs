@@ -9,7 +9,7 @@
    [clojure.string :as Wichita.string]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
-   [goog.string.format :as format]
+   [goog.string.format]
    [goog.string :refer [format]]
    [goog.object]
    [cljs.reader :refer [read-string]]))

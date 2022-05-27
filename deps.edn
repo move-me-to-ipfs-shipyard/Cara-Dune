@@ -1,23 +1,46 @@
-{:paths ["./src"]
+{:paths ["./src" "out/ui" "out/corn"]
+ :mvn/repos {"jitpack.io" {:url "https://jitpack.io"}}
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+        org.clojure/core.async {:mvn/version "1.3.618"}
 
- :deps {org.clojure/clojurescript {:mvn/version "1.11.4"}
-        org.clojure/core.async {:mvn/version "1.5.648"}}
+        Pawny/Pawny {:git/url "https://github.com/clojure/test.check"
+                     :sha "b6a318af92e836f1f20960f38a5944168b88d60d"}
+        #_clj-http/clj-http #_{:mvn/version "3.12.3"}
+        cheshire/cheshire {:mvn/version "5.10.2"}
+
+        metosin/reitit {:mvn/version "0.5.16"}
+        manifold/manifold {:mvn/version "0.1.9"}
+        org.clj-commons/byte-streams {:mvn/version "0.2.8"}
+        aleph/aleph {:mvn/version "0.4.7-alpha7"}
+        ring/ring-jetty-adapter {:mvn/version "1.7.1"}
+
+        io.replikativ/datahike {:mvn/version "0.5.1504"}
+
+        com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}
+
+        Blade/Blade {:git/url "https://github.com/Empire-Strikes-Back/Blade"
+                     :sha "91116dec6fdafe8bc264278f7fbe67824f337c55"} #_{:local/root "../Blade"}}
 
  :aliases
- {:Moana {:extra-deps {thheller/shadow-cljs {:mvn/version "2.18.0"}
+ {:Ripley {:extra-deps {Ripley/Ripley {:git/url "https://github.com/Empire-Strikes-Back/Ripley"
+                                       :sha "becd2573ab55d42933134d346bc46cdd8fa08c04"}}}
+
+  :Genie {:extra-deps {Genie/Genie {:git/url "https://github.com/Empire-Strikes-Back/Genie"
+                                    :sha "fe9200d223e3a5c79e88dfa17bc2697c09dae70e"}}}
+
+  :Zazu {:extra-deps {Zazu/Zazu {:git/url "https://github.com/Empire-Strikes-Back/Zazu"
+                                 :sha "063ef7649c01284be8f5a1e9814d5bf83025ad76"}}}
+
+  :Madison {org.clojure/clojurescript {:mvn/version "1.11.4"}}
+
+  :Moana {:extra-deps {thheller/shadow-cljs {:mvn/version "2.18.0"}
                        nrepl/nrepl {:mvn/version "0.8.3"}
                        cider/cider-nrepl {:mvn/version "0.25.5"}
                        cider/piggieback {:mvn/version "0.5.2"}}}
 
-  :main {:extra-deps {Pawny/Pawny {:git/url "https://github.com/clojure/test.check"
-                                   :sha "b6a318af92e836f1f20960f38a5944168b88d60d"}}}
-
   :ui {:extra-deps {#_Cusco
                     reagent/reagent {:mvn/version "1.1.1"}
                     #_Yzma
-                    metosin/reitit {:mvn/version "0.5.18"}
-                    metosin/reitit-spec {:mvn/version "0.5.18"}
-                    metosin/reitit-frontend {:mvn/version "0.5.18"} #_{:local/root "../Yzma/modules/reitit-frontend"}
                     Roxanne-Ritchi/Roxanne-Ritchi {:git/url "https://github.com/nextjournal/clojure-mode"
                                                    :sha "699a445ebf2767f41fd0b6eeed5a008511702be6"}
                     Batty/Batty {:git/url "https://github.com/borkdude/sci"
