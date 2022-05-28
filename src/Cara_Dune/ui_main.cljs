@@ -188,7 +188,7 @@
             ":Co-Pilot i saw your planet destroyed - i was on the Death Star :_ which one?")
     (ops-process {})
     (.render @(:dom-rootA root) (reagent.core/as-element [rc-ui]))
-    (websocket-process {:send| (:program-send| root)
+    #_(websocket-process {:send| (:program-send| root)
                         :recv| (:ops| root)})))
 
 (defn reload

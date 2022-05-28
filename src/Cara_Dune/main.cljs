@@ -16,7 +16,7 @@
    [cljs.reader :refer [read-string]]
 
    [Cara-Dune.seed :refer [root op]]
-   [Cara-Dune.host]
+   #_[Cara-Dune.host]
    [Cara-Dune.raisins]
    [Cara-Dune.peanuts]
    [Cara-Dune.kiwis]
@@ -28,12 +28,12 @@
 (defonce os (js/require "os"))
 (defonce fs (js/require "fs-extra"))
 (defonce path (js/require "path"))
-(defonce express (js/require "express"))
 (set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
 (set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
 (defonce OrbitDB (js/require "orbit-db"))
 (defonce IPFSHttpClient (js/require "ipfs-http-client"))
 (defonce IPFS (js/require "ipfs"))
+(defonce electron (js/require "electron"))
 
 (defmethod op :ping
   [value]
@@ -74,6 +74,7 @@
         (recur)))))
 
 (defn -main []
+  (println :main)
   (go
     (let []
 
@@ -92,15 +93,25 @@
 
                    (when (not= old-state new-state))))
 
-      (Cara-Dune.host/process
-       {:port (:port root)
-        :host| (:host| root)
-        :ws-send| (:ui-send| root)
-        :ws-recv| (:ops| root)})
+      #_(Cara-Dune.host/process
+         {:port (:port root)
+          :host| (:host| root)
+          :ws-send| (:ui-send| root)
+          :ws-recv| (:ops| root)})
 
       (ops-process {})
 
       (Cara-Dune.beans/process {})
+
+      (.on (.-app electron) "window-all-closed" (fn []
+                                                  (when-not (= js/process.platform "darwin")
+                                                    (.quit (.-app electron)))))
+      (.on (.-app electron) "ready" (fn []
+                                      (reset! (:windowA root) (electron.BrowserWindow. (clj->js {:width 1600
+                                                                                                 :height 900
+                                                                                                 :webPreferences {:nodeIntegration true}})))
+                                      (.loadURL ^js/electron.BrowserWindow @(:windowA root)  (str "file://" (.join path js/__dirname "ui" "index.html")))
+                                      (.on ^js/electron.BrowserWindow @(:windowA root) "closed" #(reset! (:windowA root) nil))))
 
       (let [ipfs (.create IPFSHttpClient "http://127.0.0.1:5001")
             orbitdb (<p!
