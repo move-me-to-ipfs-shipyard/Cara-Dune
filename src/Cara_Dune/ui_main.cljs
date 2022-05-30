@@ -52,6 +52,22 @@
    [Cara-Dune.ui-corn]
    #_[Cara-Dune.Ritchi]))
 
+(when (exists? js/module)
+  (let [ipcRenderer (or (.-ipcRenderer (js/require "electron"))
+                        (aget (js/require "electron") "ipcRenderer"))]
+    (put! (:program-send| root) {:op :ping
+                                 :from :ui
+                                 :if :there-is-sompn-strage-in-your-neighbourhood
+                                 :who :ya-gonna-call?})
+
+    (.on ipcRenderer "asynchronous-message" (fn [event message-string]
+                                              (put! (:ops| root) (read-string message-string))))
+    (go
+      (loop []
+        (when-let [value (<! (:program-send| root))]
+          (.send ipcRenderer "asynchronous-message" (str value))
+          (recur))))))
+
 (def colors
   {:sands "#edd3af" #_"#D2B48Cff"
    :Korvus "lightgrey"

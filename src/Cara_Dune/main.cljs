@@ -101,17 +101,40 @@
 
       (ops-process {})
 
-      (Cara-Dune.beans/process {})
+      (let [done| (chan 1)]
+        (.on (.-app electron) "ready" (fn []
+                                        (reset! (:windowA root) (electron.BrowserWindow. (clj->js {:width 1600
+                                                                                                   :height 900
+                                                                                                   :title "one X-Wing? great - we're saved"
+                                                                                                   :icon (.join path js/__dirname "icon.png")
+                                                                                                   :webPreferences {:nodeIntegration true
+                                                                                                                    :contextIsolation false}})))
+                                        (.loadURL ^js/electron.BrowserWindow @(:windowA root)  (str "file://" (.join path js/__dirname "ui" "index.html")))
+                                        (.on ^js/electron.BrowserWindow @(:windowA root) "closed" #(reset! (:windowA root) nil))
+                                        (.on (.-webContents @(:windowA root)) "did-finish-load"
+                                             (fn []
+                                               (put! (:ui-send| root) {:op :ping
+                                                                       :if :you-re-seeing-things-running-through-your-head
+                                                                       :who :ya-gonna-call?})))
+                                        (close! done|)))
+        (.on (.-app electron) "window-all-closed" (fn []
+                                                    (when-not (= js/process.platform "darwin")
+                                                      (.quit (.-app electron)))))
+        (.on (.-app electron) "error" (fn [ex]
+                                        (js/console.log ex)
+                                        (close! done|)))
+        (<! done|))
 
-      (.on (.-app electron) "window-all-closed" (fn []
-                                                  (when-not (= js/process.platform "darwin")
-                                                    (.quit (.-app electron)))))
-      (.on (.-app electron) "ready" (fn []
-                                      (reset! (:windowA root) (electron.BrowserWindow. (clj->js {:width 1600
-                                                                                                 :height 900
-                                                                                                 :webPreferences {:nodeIntegration true}})))
-                                      (.loadURL ^js/electron.BrowserWindow @(:windowA root)  (str "file://" (.join path js/__dirname "ui" "index.html")))
-                                      (.on ^js/electron.BrowserWindow @(:windowA root) "closed" #(reset! (:windowA root) nil))))
+      (<! (Cara-Dune.beans/process {}))
+
+      (let []
+        (.on (.-ipcMain electron) "asynchronous-message" (fn [event message-string]
+                                                           (put! (:ops| root) (-> message-string #_(.toString) (read-string)))))
+        (go
+          (loop []
+            (when-let [message (<! (:ui-send| root))]
+              (.send (.-webContents @(:windowA root)) "asynchronous-message" (str message))
+              (recur)))))
 
       (let [ipfs (.create IPFSHttpClient "http://127.0.0.1:5001")
             orbitdb (<p!
@@ -119,7 +142,7 @@
                       (.createInstance
                        OrbitDB ipfs
                        (clj->js
-                        {"directory" (.join path (.homedir os) ".Cara-Dune" "orbitdb")}))
+                        {"directory" (:orbitdb-data-dirpath root)}))
                       (.catch (fn [ex]
                                 (println ex)))))]
         (println (.. orbitdb -identity -id))))))

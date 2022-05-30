@@ -4,7 +4,10 @@
         org.clojure/core.async {:mvn/version "1.5.648"}}
 
  :aliases
- {:shadow {:extra-deps {thheller/shadow-cljs {:mvn/version "2.18.0"}
+ {:Zazu {:extra-deps {Zazu/Zazu {:git/url "https://github.com/Empire-Strikes-Back/Zazu"
+                                 :sha "063ef7649c01284be8f5a1e9814d5bf83025ad76"}}}
+  
+  :shadow {:extra-deps {thheller/shadow-cljs {:mvn/version "2.18.0"}
                         nrepl/nrepl {:mvn/version "0.8.3"}
                         cider/cider-nrepl {:mvn/version "0.25.5"}
                         cider/piggieback {:mvn/version "0.5.2"}}}

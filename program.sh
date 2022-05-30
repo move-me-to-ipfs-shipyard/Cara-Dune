@@ -24,15 +24,24 @@ repl(){
 }
 
 jar(){
+
   rm -rf out
+
+  clojure \
+    -X:Zazu Zazu.core/process \
+    :word '"Cara-Dune"' \
+    :filename '"out/identicon/icon.png"' \
+    :size 256
+
   install
+  cp out/identicon/icon.png out/jar/icon.png
   shadow release :main :ui
-  COMMIT_HASH=$(git rev-parse --short HEAD)
-  COMMIT_COUNT=$(git rev-list --count HEAD)
-  echo Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip
-  cd out/jar
-  zip -r ../Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip ./ && \
-  cd ../../
+  # COMMIT_HASH=$(git rev-parse --short HEAD)
+  # COMMIT_COUNT=$(git rev-list --count HEAD)
+  # echo Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip
+  # cd out/jar
+  # zip -r ../Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip ./ && \
+  # cd ../../
 }
 
 release(){

@@ -27,6 +27,7 @@
                                           (.join path (.homedir os) ".Cara-Dune"))]
                 {:program-data-dirpath program-data-dirpath
                  :state-file-filepath (.join path program-data-dirpath "Cara-Dune.edn")
+                 :orbitdb-data-dirpath (.join path program-data-dirpath "orbitdb")
                  :port (or (try (.. js/global.process -env -PORT)
                                 (catch js/Error ex nil))
                            3344)
