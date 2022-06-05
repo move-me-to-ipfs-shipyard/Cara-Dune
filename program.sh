@@ -11,7 +11,12 @@ copy(){
   cp src/Cara_Dune/index.html out/jar/ui/index.html
   cp src/Cara_Dune/style.css out/jar/ui/style.css
   cp package.json out/jar/package.json
+
+  convert out/identicon/icon.png -define icon:auto-resize=256,64,48,32,16 out/identicon/icon.ico
+  png2icns out/identicon/icon.icns out/identicon/icon.png
   cp out/identicon/icon.png out/jar/icon.png
+  cp out/identicon/icon.icns out/jar/icon.icns
+  cp out/identicon/icon.ico out/jar/icon.ico
 }
 
 shadow(){
@@ -59,8 +64,6 @@ jar(){
 
 package(){
 
-  convert out/identicon/icon.png -define icon:auto-resize=256,64,48,32,16 out/identicon/icon.ico
-  png2icns out/identicon/icon.icns out/identicon/icon.png
   
   # rm -rf out/zip
 
