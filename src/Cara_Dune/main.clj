@@ -15,6 +15,7 @@
    [cheshire.core]
 
    [Cara-Dune.seed :refer [root op]]
+   [Cara-Dune.window]
    [Cara-Dune.raisins]
    [Cara-Dune.peanuts]
    [Cara-Dune.kiwis]
@@ -32,6 +33,7 @@
   []
   (require
    '[Cara-Dune.seed]
+   '[Cara-Dune.window]
    '[Cara-Dune.raisins]
    '[Cara-Dune.peanuts]
    '[Cara-Dune.kiwis]
@@ -98,4 +100,6 @@
 
                  (when (not= old-state new-state))))
 
-    (ops-process {})))
+    (ops-process {})
+
+    (Cara-Dune.window/process {})))
