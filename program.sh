@@ -2,7 +2,7 @@
 
 repl(){
   clj \
-    -J-Dclojure.core.async.pool-size=1 \
+    -J-Dclojure.core.async.pool-size=8 \
     -X:Ripley Ripley.core/process \
     :main-ns Cara-Dune.main
 }
@@ -10,7 +10,7 @@ repl(){
 
 main(){
   clojure \
-    -J-Dclojure.core.async.pool-size=1 \
+    -J-Dclojure.core.async.pool-size=8 \
     -M -m Cara-Dune.main
 }
 
@@ -23,8 +23,7 @@ tag(){
   echo $TAG
 }
 
-jar(){
-
+identicon(){
   clojure \
     -X:Zazu Zazu.core/process \
     :word '"Cara-Dune"' \
@@ -33,14 +32,17 @@ jar(){
 
   convert out/identicon/icon.png -define icon:auto-resize=256,64,48,32,16 out/identicon/icon.ico
   png2icns out/identicon/icon.icns out/identicon/icon.png
+}
 
-  rm -rf out/*.jar
+jar(){
+  OPERATING_SYSTEM=$1
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
-    -X:Genie Genie.core/process \
+    -J-Dcljfx.skip-javafx-initialization=true \
+    -X:$OPERATING_SYSTEM:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
-    :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
+    :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH-$OPERATING_SYSTEM.jar\"" \
     :paths '["src" "out/ui" "out/identicon"]'
 }
 
@@ -71,7 +73,12 @@ ui_release(){
 release(){
   rm -rf out
   ui_release
-  jar
+  identicon
+  rm -rf out/*.jar
+  for os in "linux" "windows" "macos"; do
+    echo "i am assembling jar for $os"
+    jar $os || break;
+  done
 }
 
 "$@"
