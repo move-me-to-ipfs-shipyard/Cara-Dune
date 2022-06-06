@@ -19,8 +19,8 @@
    ["react" :as react]
    ["react-dom/client" :as react-dom.client]
 
-   [reagent.core :as reagent.core]
-   [reagent.dom :as reagent.dom]
+   [reagent.core]
+   [reagent.dom]
 
    ["antd/lib/layout" :default AntdLayout]
    ["antd/lib/menu" :default AntdMenu]
@@ -51,22 +51,6 @@
    [Cara-Dune.ui-seed :refer [root]]
    [Cara-Dune.ui-corn]
    #_[Cara-Dune.Ritchi]))
-
-(when (exists? js/module)
-  (let [ipcRenderer (or (.-ipcRenderer (js/require "electron"))
-                        (aget (js/require "electron") "ipcRenderer"))]
-    (put! (:program-send| root) {:op :ping
-                                 :from :ui
-                                 :if :there-is-sompn-strage-in-your-neighbourhood
-                                 :who :ya-gonna-call?})
-
-    (.on ipcRenderer "asynchronous-message" (fn [event message-string]
-                                              (put! (:ops| root) (read-string message-string))))
-    (go
-      (loop []
-        (when-let [value (<! (:program-send| root))]
-          (.send ipcRenderer "asynchronous-message" (str value))
-          (recur))))))
 
 (def colors
   {:sands "#edd3af" #_"#D2B48Cff"
@@ -136,7 +120,7 @@
 (defn websocket-process
   [{:keys [send| recv|]
     :as opts}]
-  (let [socket (js/WebSocket. "ws://localhost:3344/ws")]
+  (let [socket (js/WebSocket. "ws://localhost:3344/ui")]
     (.addEventListener socket "open" (fn [event]
                                        (println :websocket-open)
                                        (put! send| {:op :ping
@@ -205,7 +189,8 @@
     (ops-process {})
     (.render @(:dom-rootA root) (reagent.core/as-element [rc-ui]))
     #_(websocket-process {:send| (:program-send| root)
-                        :recv| (:ops| root)})))
+                          :recv| (:ops| root)})
+    #_(reitit.frontend.easy/push-state :rc-main-tab)))
 
 (defn reload
   []
