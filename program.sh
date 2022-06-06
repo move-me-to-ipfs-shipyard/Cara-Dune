@@ -40,10 +40,11 @@ jar(){
   COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
     -J-Dcljfx.skip-javafx-initialization=true \
-    -X:$OPERATING_SYSTEM:Genie Genie.core/process \
+    -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH-$OPERATING_SYSTEM.jar\"" \
-    :paths '["src" "out/ui" "out/identicon"]'
+    :paths '["src" "out/ui" "out/identicon"]' \
+    :create-basis-opts "{:aliases [:$OPERATING_SYSTEM]}"
 }
 
 shadow(){
