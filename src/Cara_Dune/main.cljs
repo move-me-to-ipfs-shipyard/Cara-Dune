@@ -16,7 +16,6 @@
    [cljs.reader :refer [read-string]]
 
    [Cara-Dune.seed :refer [root op]]
-   #_[Cara-Dune.host]
    [Cara-Dune.raisins]
    [Cara-Dune.peanuts]
    [Cara-Dune.kiwis]
@@ -72,7 +71,6 @@
 
       (println ":_ Mandalorian isn't a race")
       (println ":Mando it's a Creed")
-      (println (format "http://localhost:%s" (:port root)))
       (println "i dont want my next job")
       (println "Kuiil has spoken")
 
@@ -84,12 +82,6 @@
                  (fn [ref wathc-key old-state new-state]
 
                    (when (not= old-state new-state))))
-
-      #_(Cara-Dune.host/process
-         {:port (:port root)
-          :host| (:host| root)
-          :ws-send| (:ui-send| root)
-          :ws-recv| (:ops| root)})
 
       (ops-process {})
 
