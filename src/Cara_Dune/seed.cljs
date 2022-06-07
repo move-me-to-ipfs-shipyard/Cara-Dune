@@ -14,20 +14,16 @@
    [goog.object]
    [cljs.reader :refer [read-string]]))
 
-(defonce os (js/require "os"))
-(defonce fs (js/require "fs-extra"))
-(defonce path (js/require "path"))
-
 (defmulti op :op)
 
 (defonce root (let [program-data-dirpath (or
                                           (some->
                                            (.. js/global.process -env -CARA_DUNE_PATH)
-                                           (clojure.string/replace-first  #"~" (.homedir os)))
-                                          (.join path (.homedir os) ".Cara-Dune"))]
+                                           (clojure.string/replace-first  #"~" (.homedir (js/require "os"))))
+                                          (.join (js/require "path") (.homedir (js/require "os")) ".Cara-Dune"))]
                 {:program-data-dirpath program-data-dirpath
-                 :state-file-filepath (.join path program-data-dirpath "Cara-Dune.edn")
-                 :orbitdb-data-dirpath (.join path program-data-dirpath "orbitdb")
+                 :state-file-filepath (.join (js/require "path") program-data-dirpath "Cara-Dune.edn")
+                 :orbitdb-data-dirpath (.join (js/require "path") program-data-dirpath "orbitdb")
                  :port (or (try (.. js/global.process -env -PORT)
                                 (catch js/Error ex nil))
                            3344)

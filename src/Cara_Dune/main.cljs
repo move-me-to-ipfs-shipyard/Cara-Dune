@@ -25,16 +25,6 @@
    [Cara-Dune.corn]
    [Cara-Dune.beans]))
 
-(defonce os (js/require "os"))
-(defonce fs (js/require "fs-extra"))
-(defonce path (js/require "path"))
-(set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
-(set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
-(defonce OrbitDB (js/require "orbit-db"))
-(defonce IPFSHttpClient (js/require "ipfs-http-client"))
-(defonce IPFS (js/require "ipfs"))
-(defonce electron (js/require "electron"))
-
 (defmethod op :ping
   [value]
   (go
@@ -75,6 +65,8 @@
 
 (defn -main []
   (println :main)
+  (set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
+  (set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
   (go
     (let []
 
@@ -85,7 +77,7 @@
       (println "Kuiil has spoken")
 
 
-      (.ensureDirSync fs (:program-data-dirpath root))
+      (.ensureDirSync (js/require "fs-extra") (:program-data-dirpath root))
 
       (remove-watch (:stateA root) :watch-fn)
       (add-watch (:stateA root) :watch-fn
@@ -101,22 +93,24 @@
 
       (ops-process {})
 
-      (let [done| (chan 1)]
-        (.on (.-app electron) "ready" (fn []
-                                        (reset! (:windowA root) (electron.BrowserWindow. (clj->js {:width 1600
-                                                                                                   :height 900
-                                                                                                   :title "one X-Wing? great - we're saved"
-                                                                                                   :icon (.join path js/__dirname "icon.png")
-                                                                                                   :webPreferences {:nodeIntegration true
-                                                                                                                    :contextIsolation false}})))
-                                        (.loadURL ^js/electron.BrowserWindow @(:windowA root)  (str "file://" (.join path js/__dirname "ui" "index.html")))
-                                        (.on ^js/electron.BrowserWindow @(:windowA root) "closed" #(reset! (:windowA root) nil))
-                                        (.on (.-webContents @(:windowA root)) "did-finish-load"
-                                             (fn []
-                                               (put! (:ui-send| root) {:op :ping
-                                                                       :if :you-re-seeing-things-running-through-your-head
-                                                                       :who :ya-gonna-call?})))
-                                        (close! done|)))
+      (let [done| (chan 1)
+            electron (js/require "electron")]
+        (.on (.-app electron) "ready"
+             (fn []
+               (reset! (:windowA root) (electron.BrowserWindow. (clj->js {:width 1600
+                                                                          :height 900
+                                                                          :title "one X-Wing? great - we're saved"
+                                                                          :icon (.join (js/require "path") js/__dirname "icon.png")
+                                                                          :webPreferences {:nodeIntegration true
+                                                                                           :contextIsolation false}})))
+               (.loadURL ^js/electron.BrowserWindow @(:windowA root)  (str "file://" (.join (js/require "path") js/__dirname "ui" "index.html")))
+               (.on ^js/electron.BrowserWindow @(:windowA root) "closed" #(reset! (:windowA root) nil))
+               (.on (.-webContents @(:windowA root)) "did-finish-load"
+                    (fn []
+                      (put! (:ui-send| root) {:op :ping
+                                              :if :you-re-seeing-things-running-through-your-head
+                                              :who :ya-gonna-call?})))
+               (close! done|)))
         (.on (.-app electron) "window-all-closed" (fn []
                                                     (when-not (= js/process.platform "darwin")
                                                       (.quit (.-app electron)))))
@@ -128,19 +122,20 @@
       (<! (Cara-Dune.beans/process {}))
 
       (let []
-        (.on (.-ipcMain electron) "asynchronous-message" (fn [event message-string]
-                                                           (put! (:ops| root) (-> message-string #_(.toString) (read-string)))))
+        (.on (.-ipcMain (js/require "electron")) "asynchronous-message"
+             (fn [event message-string]
+               (put! (:ops| root) (-> message-string #_(.toString) (read-string)))))
         (go
           (loop []
             (when-let [message (<! (:ui-send| root))]
               (.send (.-webContents @(:windowA root)) "asynchronous-message" (str message))
               (recur)))))
 
-      (let [ipfs (.create IPFSHttpClient "http://127.0.0.1:5001")
+      (let [ipfs (.create (js/require "ipfs-http-client") "http://127.0.0.1:5001")
             orbitdb (<p!
                      (->
                       (.createInstance
-                       OrbitDB ipfs
+                       (js/require "orbit-db") ipfs
                        (clj->js
                         {"directory" (:orbitdb-data-dirpath root)}))
                       (.catch (fn [ex]
@@ -150,8 +145,9 @@
 
 (comment
 
-  (<p! (.create IPFS (clj->js
-                      {:repo (.join path (.homedir os) ".Cara-Dune" "ipfs")})))
+  (<p! (.create (js/require "ipfs")
+                (clj->js
+                 {:repo (.join (js/require "path") (.homedir (js/require "os")) ".Cara-Dune" "ipfs")})))
 
   ;
   )
