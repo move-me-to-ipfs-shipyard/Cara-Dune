@@ -64,17 +64,19 @@
 
 (defn -main []
   (println :main)
-  (set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
-  (set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
+
   (go
     (let []
-
       (println ":_ Mandalorian isn't a race")
       (println ":Mando it's a Creed")
       (println "i dont want my next job")
       (println "Kuiil has spoken")
 
-
+      (set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
+      (set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
+      
+      (<! (Cara-Dune.seed/process {}))
+      
       (.ensureDirSync (js/require "fs-extra") (:program-data-dirpath root))
 
       (remove-watch (:stateA root) :watch-fn)

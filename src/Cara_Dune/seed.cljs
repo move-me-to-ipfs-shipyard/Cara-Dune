@@ -16,19 +16,26 @@
 
 (defmulti op :op)
 
-(defonce root (let [program-data-dirpath (or
-                                          (some->
-                                           (.. js/global.process -env -CARA_DUNE_PATH)
-                                           (clojure.string/replace-first  #"~" (.homedir (js/require "os"))))
-                                          (.join (js/require "path") (.homedir (js/require "os")) ".Cara-Dune"))]
-                {:program-data-dirpath program-data-dirpath
-                 :state-file-filepath (.join (js/require "path") program-data-dirpath "Cara-Dune.edn")
-                 :orbitdb-data-dirpath (.join (js/require "path") program-data-dirpath "orbitdb")
-                 :port (or (try (.. js/global.process -env -PORT)
-                                (catch js/Error ex nil))
-                           3344)
-                 :stateA (atom nil)
-                 :windowA (atom nil)
-                 :host| (chan 1)
-                 :ops| (chan 10)
-                 :ui-send| (chan 10)}))
+(declare root)
+
+(defn process
+  [{:keys []
+    :as opts}]
+  (go
+    (defonce root
+      (let [program-data-dirpath (or
+                                  (some->
+                                   (.. js/global.process -env -CARA_DUNE_PATH)
+                                   (clojure.string/replace-first  #"~" (.homedir (js/require "os"))))
+                                  (.join (js/require "path") (.homedir (js/require "os")) ".Cara-Dune"))]
+        {:program-data-dirpath program-data-dirpath
+         :state-file-filepath (.join (js/require "path") program-data-dirpath "Cara-Dune.edn")
+         :orbitdb-data-dirpath (.join (js/require "path") program-data-dirpath "orbitdb")
+         :port (or (try (.. js/global.process -env -PORT)
+                        (catch js/Error ex nil))
+                   3344)
+         :stateA (atom nil)
+         :windowA (atom nil)
+         :host| (chan 1)
+         :ops| (chan 10)
+         :ui-send| (chan 10)}))))
