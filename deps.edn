@@ -1,23 +1,22 @@
-{:paths ["./src" "out/ui" "out/identicon"]
+{:paths ["./src" "out/ui"]
  :mvn/repos {"jitpack.io" {:url "https://jitpack.io"}}
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-        org.clojure/clojurescript {:mvn/version "1.11.4"}
         org.clojure/core.async {:mvn/version "1.3.618"}
 
         test.check/test.check {:git/url "https://github.com/clojure/test.check"
                                :sha "b6a318af92e836f1f20960f38a5944168b88d60d"}
+        #_clj-http/clj-http #_{:mvn/version "3.12.3"}
         cheshire/cheshire {:mvn/version "5.10.2"}
 
-        cljfx/cljfx {:git/url "https://github.com/cljfx/cljfx"
-                     :sha "29aaef956b22cee774524912a3083ed651033f1b"
-                     :exclusions [org.openjfx/javafx-controls
-                                  org.openjfx/javafx-base
-                                  org.openjfx/javafx-fxml
-                                  org.openjfx/javafx-graphics
-                                  org.openjfx/javafx-media
-                                  org.openjfx/javafx-web]}
+        metosin/reitit {:mvn/version "0.5.16"}
+        manifold/manifold {:mvn/version "0.1.9"}
+        org.clj-commons/byte-streams {:mvn/version "0.2.8"}
+        aleph/aleph {:mvn/version "0.4.7-alpha7"}
+        ring/ring-jetty-adapter {:mvn/version "1.7.1"}
 
-        org.openjfx/javafx-fxml {:mvn/version "17.0.2"}}
+        io.replikativ/datahike {:mvn/version "0.5.1504"}
+
+        com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}}
 
  :aliases
  {:Ripley {:extra-deps {Ripley/Ripley {:git/url "https://github.com/Empire-Strikes-Back/Ripley"
@@ -26,8 +25,7 @@
   :Genie {:extra-deps {Genie/Genie {:git/url "https://github.com/Empire-Strikes-Back/Genie"
                                     :sha "3ebf0c0f787f4ca5de6a1693ea59d86287e463d3"}}}
 
-  :Zazu {:extra-deps {Zazu/Zazu {:git/url "https://github.com/Empire-Strikes-Back/Zazu"
-                                 :sha "063ef7649c01284be8f5a1e9814d5bf83025ad76"}}}
+  :cljs {org.clojure/clojurescript {:mvn/version "1.11.4"}}
 
   :shadow {:extra-deps {thheller/shadow-cljs {:mvn/version "2.18.0"}
                         nrepl/nrepl {:mvn/version "0.8.3"}
@@ -36,14 +34,4 @@
 
   :ui {:extra-deps {reagent/reagent {:mvn/version "1.1.1"}
                     sci/sci {:git/url "https://github.com/borkdude/sci"
-                             :sha "6c10e494371a37a56bef45c8148435888bae3a45"}}}
-
-  :linux {:extra-deps {org.openjfx/javafx-base$linux {:mvn/version "17.0.2"}
-                       org.openjfx/javafx-graphics$linux {:mvn/version "17.0.2"}
-                       org.openjfx/javafx-web$linux {:mvn/version "17.0.2"}}}
-  :windows {:extra-deps {org.openjfx/javafx-base$win {:mvn/version "17.0.2"}
-                         org.openjfx/javafx-graphics$win {:mvn/version "17.0.2"}
-                         org.openjfx/javafx-web$win {:mvn/version "17.0.2"}}}
-  :macos {:extra-deps {org.openjfx/javafx-base$mac {:mvn/version "17.0.2"}
-                       org.openjfx/javafx-graphics$mac {:mvn/version "17.0.2"}
-                       org.openjfx/javafx-web$mac {:mvn/version "17.0.2"}}}}}
+                             :sha "6c10e494371a37a56bef45c8148435888bae3a45"}}}}}

@@ -23,25 +23,17 @@ tag(){
   echo $TAG
 }
 
-identicon(){
-  clojure \
-    -X:Zazu Zazu.core/process \
-    :word '"Cara-Dune"' \
-    :filename '"out/identicon/icon.png"' \
-    :size 256
-}
 
 jar(){
-  OPERATING_SYSTEM=$1
+
+  rm -rf out/*.jar
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
-    -J-Dcljfx.skip-javafx-initialization=true \
     -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
-    :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH-$OPERATING_SYSTEM.jar\"" \
-    :paths '["src" "out/ui" "out/identicon"]' \
-    :create-basis-opts "{:aliases [:$OPERATING_SYSTEM]}"
+    :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
+    :paths '["src" "out/ui"]'
 }
 
 shadow(){
@@ -71,12 +63,7 @@ ui_release(){
 release(){
   rm -rf out
   ui_release
-  identicon
-  rm -rf out/*.jar
-  for os in "linux" "windows" "macos"; do
-    echo "i am assembling jar for $os"
-    jar $os || break;
-  done
+  jar
 }
 
 "$@"
