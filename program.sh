@@ -53,15 +53,6 @@ out(){
   copy
 }
 
-jar(){
-  COMMIT_HASH=$(git rev-parse --short HEAD)
-  COMMIT_COUNT=$(git rev-list --count HEAD)
-  echo Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip
-  cd out/jar
-  zip -r ../Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.zip ./ && \
-  cd ../../
-}
-
 package(){
 
   
