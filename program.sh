@@ -60,6 +60,7 @@ release(){
   identicon
   copy
   compile
+  jar
 }
 
 tag(){
