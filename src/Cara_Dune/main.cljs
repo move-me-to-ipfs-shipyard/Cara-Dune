@@ -70,14 +70,12 @@
       (println ":Mando it's a Creed")
       (println "i dont want my next job")
       (println "Kuiil has spoken")
-      
-      (<! (chan 1))
 
       (set! (.-defaultMaxListeners (.-EventEmitter (js/require "events"))) 100)
       (set! (.-AbortController js/global) (.-AbortController (js/require "node-abort-controller")))
-
+      
       (<! (Cara-Dune.seed/process {}))
-
+      
       (.ensureDirSync (js/require "fs-extra") (:program-data-dirpath root))
 
       (remove-watch (:stateA root) :watch-fn)
@@ -291,19 +289,6 @@
       :ipfs-api-url ipfs-api-url
       :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
       :id| id|}))
-
-  ;
-  )
-
-(comment
-  (.on js/global.process "beforeExit"
-       (fn [code]
-         (js/Promise. (fn [resolve reject]
-                        (go
-                          (<! (chan 1))
-                          (resolve 0))))))
-
-  (<! (chan 1))
 
   ;
   )

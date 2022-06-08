@@ -46,9 +46,6 @@ release(){
   identicon
   copy
   compile
-  COMMIT_HASH=$(git rev-parse --short HEAD)
-  COMMIT_COUNT=$(git rev-list --count HEAD)
-  mv out/jar/main.js "out/jar/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.js"
 }
 
 run(){
