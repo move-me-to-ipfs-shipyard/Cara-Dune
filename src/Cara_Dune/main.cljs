@@ -20,9 +20,8 @@
    [Cara-Dune.peanuts]
    [Cara-Dune.kiwis]
    [Cara-Dune.salt]
-   [Cara-Dune.microwaved-potatoes]
-   [Cara-Dune.corn]
-   [Cara-Dune.beans]))
+   [Cara-Dune.carrots]
+   [Cara-Dune.rolled-oats]))
 
 (defmethod op :ping
   [value]
@@ -115,7 +114,7 @@
                                         (close! done|)))
         (<! done|))
 
-      (<! (Cara-Dune.beans/process {}))
+      (<! (Cara-Dune.rolled-oats/process {}))
 
       (let []
         (.on (.-ipcMain (js/require "electron")) "asynchronous-message"
@@ -203,9 +202,9 @@
                 id| (chan 1)
                 port (or (System/getenv "Jar_Jar_IPFS_PORT") "5001")
                 ipfs-api-url (format "http://127.0.0.1:%s" port)
-                games-topic (Cara-Dune.corn/encode-base64url-u "raisins")
-                game-topic (Cara-Dune.corn/encode-base64url-u frequency)
-                _ (Cara-Dune.corn/subscribe-process
+                games-topic (Cara-Dune.rolled-oats/encode-base64url-u "raisins")
+                game-topic (Cara-Dune.rolled-oats/encode-base64url-u frequency)
+                _ (Cara-Dune.rolled-oats/subscribe-process
                    {:sub| sub|
                     :cancel| cancel-sub|
                     :frequency frequency
@@ -224,17 +223,17 @@
                   (timeout 2000)
                   ([_]
                    (when host?
-                     (Cara-Dune.corn/pubsub-pub
+                     (Cara-Dune.rolled-oats/pubsub-pub
                       ipfs-api-url games-topic (str {:op :games
                                                      :timestamp (.getTime (java.util.Date.))
                                                      :frequency frequency
                                                      :host-peer-id peer-id}))
-                     (Cara-Dune.corn/pubsub-pub
+                     (Cara-Dune.rolled-oats/pubsub-pub
                       ipfs-api-url game-topic (str {:op :game-state
                                                     :timestamp (.getTime (java.util.Date.))
                                                     :game-state {:host-peer-id peer-id}})))
 
-                   (Cara-Dune.corn/pubsub-pub
+                   (Cara-Dune.rolled-oats/pubsub-pub
                     ipfs-api-url game-topic (str {:op :player-state
                                                   :timestamp (.getTime (java.util.Date.))
                                                   :peer-id peer-id}))
@@ -284,7 +283,7 @@
         raw-stream-connection-pool (Simba.http/connection-pool {:connection-options {:raw-stream? true}})]
 
     (alter-var-root #'raw-stream-connection-pool (constantly raw-stream-connection-pool))
-    (Cara-Dune.corn/subscribe-process
+    (Cara-Dune.rolled-oats/subscribe-process
      {:sub| sub|
       :raw-stream-connection-pool raw-stream-connection-pool
       :cancel| (chan (sliding-buffer 1))
