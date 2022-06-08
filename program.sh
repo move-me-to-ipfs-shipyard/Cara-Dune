@@ -45,6 +45,14 @@ compile(){
   shadow release :ui :main
 }
 
+out(){
+  rm -rf out
+
+  install
+  identicon
+  copy
+}
+
 jar(){
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
@@ -54,12 +62,42 @@ jar(){
   cd ../../
 }
 
+package(){
+
+  
+  # rm -rf out/zip
+
+  COMMIT_HASH=$(git rev-parse --short HEAD)
+  COMMIT_COUNT=$(git rev-list --count HEAD)
+  ln -s ../../node_modules out/jar/node_modules
+  npx electron-packager out/jar \
+    "Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH" \
+    --overwrite \
+    --asar \
+    --executable-name=Cara-Dune \
+    --app-name=Cara-Dune \
+    --build-version="$COMMIT_COUNT-$COMMIT_HASH" \
+    --icon=out/identicon/icon.png \
+    --out=out/zip \
+    --platform=darwin,linux,win32 \
+    --arch=x64
+}
+
+zip_files(){
+  rm -rf out/zip/*.zip
+  for dir in out/zip/*; do
+    echo $dir
+    cd $dir
+    zip -qr ../../../$dir ./
+    cd ../../../
+  done
+}
+
 release(){
-  rm -rf out
-  install
-  identicon
-  copy
+  out
   compile
+  package
+  zip_files
 }
 
 tag(){
