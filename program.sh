@@ -23,6 +23,13 @@ tag(){
   echo $TAG
 }
 
+identicon(){
+  clojure \
+    -X:Zazu Zazu.core/process \
+    :word '"Cara-Dune"' \
+    :filename '"out/identicon/icon.png"' \
+    :size 256
+}
 
 jar(){
 
@@ -33,36 +40,11 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui"]'
-}
-
-shadow(){
-  clj -A:shadow:ui -M -m shadow.cljs.devtools.cli "$@"
-}
-
-ui_install(){
-  npm i --no-package-lock
-  mkdir -p out/ui/
-  cp src/Cara_Dune/index.html out/ui/index.html
-  cp src/Cara_Dune/style.css out/ui/style.css
-}
-
-ui_repl(){
-  ui_install
-  shadow clj-repl
-  # (shadow/watch :ui)
-  # (shadow/repl :ui)
-  # :repl/quit
-}
-
-ui_release(){
-  ui_install
-  shadow release :ui
+    :paths '["src" "out/identicon"]'
 }
 
 release(){
-  rm -rf out
-  ui_release
+  identicon
   jar
 }
 

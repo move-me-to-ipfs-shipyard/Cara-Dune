@@ -1,6 +1,6 @@
 (ns Cara-Dune.salt
   (:require
-   [clojure.core.async :as a
+   [clojure.core.async
     :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
@@ -8,6 +8,8 @@
             pipe pipeline pipeline-async]]
    [clojure.java.io]
    [clojure.string]
-   [clojure.repl]))
+   [clojure.repl]
+
+   [Cara-Dune.seed]))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
