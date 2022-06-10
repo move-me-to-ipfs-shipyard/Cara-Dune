@@ -19,7 +19,7 @@
    (io.libp2p.core Libp2pException Stream P2PChannelHandler)
    (io.libp2p.core.multistream  ProtocolBinding StrictProtocolBinding)
    (io.libp2p.protocol Ping PingController ProtocolHandler ProtobufProtocolHandler
-                       ProtocolMessageHandler ProtocolMessageHandler$DefaultImpls)
+                       ProtocolMessageHandler #_ProtocolMessageHandler$DefaultImpls)
    (io.libp2p.security.noise NoiseXXSecureChannel)
    (io.libp2p.core.crypto PrivKey)
 

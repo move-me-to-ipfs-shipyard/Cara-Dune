@@ -18,7 +18,7 @@
         io.replikativ/datahike {:mvn/version "0.5.1504"}
 
         tech.pegasys/noise-java {:mvn/version "1.0.0"}
-        io.libp2p/jvm-libp2p-minimal {:mvn/version "0.8.9-RELEASE"
+        io.libp2p/jvm-libp2p-minimal {:mvn/version "0.9.0-RELEASE"
                                       :exclusions [tech.pegasys/noise-java]}}
 
  :aliases
