@@ -188,6 +188,8 @@
   (connect host1 address3)
   (connect host2 address3)
 
+  (println :total-connections (-> host1 (.getNetwork) (.getConnections) (vec) (count)))
+
   (.toString (.getSecond (.toPeerIdAndAddr address2)))
 
   (MultiaddrDns/resolve address2)

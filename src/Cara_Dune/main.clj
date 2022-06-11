@@ -14,6 +14,7 @@
    [cheshire.core]
 
    [datahike.api]
+   [taoensso.timbre]
    
    [Cara-Dune.libp2p]
 
@@ -57,6 +58,8 @@
   (:gen-class))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
+
+(taoensso.timbre/merge-config! {:min-level :warn})
 
 (defonce program-data-dirpath
   (or
