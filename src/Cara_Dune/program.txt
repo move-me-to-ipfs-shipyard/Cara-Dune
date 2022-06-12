@@ -50,6 +50,21 @@ i will not have programming language gameplay
     you dont shoot a movie while watching it
     and you dont grow a fruit while eating it
     mouse and keyboard
+i will be a question-challenge-course game - i am a game of words and text
+  i will take best from Conquiztador - having a map, a course and answering quetions and challenges
+  my challenges will be
+    Jesus challenge - simple yes or no
+    raisins - choose a challenge
+    peanuts - input list answer
+    kiwis - 4-multiple choice
+    salt - programmatic challenge - clojure repl
+    carrots - input number answer
+    rolled-oats - input text answer
+  my course will be hexagons - a map will have green tone like the planet in The-Beliver episode
+  players move along the course from bottom left towards the flag - in top right - as one hero on the map - Cara-Dune
+  players take turns to choose the next hexagon, the next challenge
+  so everyone is in equal position - no randomness, same questions for everyone
+  yet palyers affect each other by choosing next challenge - in turns
 i will not use Conquiztador or Heroes III or games alike - a different game - as i said, i am not Mando
 i will take best from
   IPFS - i will not run alongside IFPS node and use http-api for pubsub mutliplayer networking - Karga already gave me the datastick
