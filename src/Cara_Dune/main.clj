@@ -16,8 +16,6 @@
    [datahike.api]
    [taoensso.timbre]
    
-   [Cara-Dune.libp2p]
-
    [Cara-Dune.seed]
    [Cara-Dune.raisins]
    [Cara-Dune.peanuts]
