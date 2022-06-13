@@ -18,7 +18,6 @@
    
    [Cara-Dune.seed]
    [Cara-Dune.raisins]
-   [Cara-Dune.peanuts]
    [Cara-Dune.kiwis]
    [Cara-Dune.salt]
    [Cara-Dune.carrots]
@@ -87,7 +86,6 @@
   (require
    '[Cara-Dune.seed]
    '[Cara-Dune.raisins]
-   '[Cara-Dune.peanuts]
    '[Cara-Dune.kiwis]
    '[Cara-Dune.salt]
    '[Cara-Dune.carrots]
