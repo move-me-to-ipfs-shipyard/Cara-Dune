@@ -24,26 +24,21 @@
    [Cara-Dune.carrots]
    [Cara-Dune.rolled-oats])
   (:import
-   (javax.swing JFrame WindowConstants ImageIcon JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
+   (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
    (javax.swing DefaultListSelectionModel JCheckBox)
    (javax.swing.border EmptyBorder)
    (javax.swing.table DefaultTableModel)
    (javax.swing.event DocumentListener DocumentEvent ListSelectionListener ListSelectionEvent)
+   (java.awt Toolkit Dimension)
    (javax.swing.text SimpleAttributeSet StyleConstants JTextComponent)
-   (java.awt Canvas Graphics Graphics2D Shape Color Polygon Dimension BasicStroke Toolkit Insets BorderLayout)
    (java.awt.event KeyListener KeyEvent MouseListener MouseEvent ActionListener ActionEvent ComponentListener ComponentEvent)
    (java.awt.event  WindowListener WindowAdapter WindowEvent)
-   (java.awt.geom Ellipse2D Ellipse2D$Double Point2D$Double)
    (com.formdev.flatlaf FlatLaf FlatLightLaf)
-   (com.formdev.flatlaf.extras FlatUIDefaultsInspector FlatDesktop FlatDesktop$QuitResponse FlatSVGIcon)
+   (com.formdev.flatlaf.extras FlatUIDefaultsInspector FlatDesktop FlatDesktop$QuitResponse)
    (com.formdev.flatlaf.util SystemInfo UIScale)
    (java.util.function Consumer)
    (java.util ServiceLoader)
-   (org.kordamp.ikonli Ikon)
-   (org.kordamp.ikonli IkonProvider)
-   (org.kordamp.ikonli.swing FontIcon)
-   (org.kordamp.ikonli.codicons Codicons)
    (net.miginfocom.swing MigLayout)
    (net.miginfocom.layout ConstraintParser LC UnitValue)
    (java.io File ByteArrayOutputStream PrintStream OutputStreamWriter PrintWriter)
@@ -74,69 +69,18 @@
 (defonce gameA (atom nil))
 (defonce settingsA (atom nil))
 
-(defonce resize| (chan (sliding-buffer 1)))
 (defonce cancel-sub| (chan 1))
 (defonce cancel-pub| (chan 1))
-(defonce canvas-draw| (chan (sliding-buffer 1)))
 (defonce ops| (chan 10))
 (defonce table| (chan (sliding-buffer 10)))
 (defonce sub| (chan (sliding-buffer 10)))
 (def ^:dynamic ^JFrame jframe nil)
-(def ^:dynamic ^Canvas canvas nil)
-(def ^:dynamic ^Graphics2D graphics nil)
 (def ^:dynamic ^JPanel jroot-panel nil)
 (def ^:dynamic raw-stream-connection-pool nil)
 
 #_(defonce *ns (find-ns 'Cara-Dune.main))
 
-(def ^:const energy-per-move 100)
-(def ^:const canvas-width 1600)
-(def ^:const canvas-height 1600)
-(def ^:const tile-size 32)
 (def ^:const jframe-title "one X-Wing? great - we're saved")
-(def ^:const grid-rows 16)
-(def ^:const grid-cols 16)
-
-(defn draw-word
-  "draw Word"
-  []
-  (.drawString graphics
-               "Word"
-               (* 0.5 (.getWidth canvas))
-               (* 0.5 (.getHeight canvas))))
-
-(defn draw-line
-  "draw line"
-  []
-  (.drawLine graphics  (* 0.3 (.getWidth canvas)) (* 0.3 (.getHeight canvas)) (* 0.7 (.getWidth canvas)) (* 0.7 (.getHeight canvas))))
-
-(defn draw-Cara
-  [{:keys [row col]}]
-  (SwingUtilities/invokeLater
-   (reify Runnable
-     (run [_]
-       (let [row-height (/ (.getHeight canvas) grid-rows)
-             col-width (/ (.getWidth canvas) grid-cols)
-             x (* col col-width)
-             y (* row row-height)
-             shape (Ellipse2D$Double. x y (* 0.7 col-width) (* 0.7 row-height))]
-         (.setPaint graphics Color/CYAN)
-         (.fill graphics shape)
-         (.setPaint graphics Color/BLACK))))))
-
-(defn clear-canvas
-  []
-  (.clearRect graphics 0 0 (.getWidth canvas)  (.getHeight canvas))
-  (.setPaint graphics (Color. 255 255 255 255) #_(Color. 237 211 175 200))
-  (.fillRect graphics 0 0 (.getWidth canvas) (.getHeight canvas))
-  (.setPaint graphics  Color/BLACK))
-
-(defn force-resize
-  []
-  (let [width (.getWidth jframe)
-        height (.getHeight jframe)]
-    (.setSize jframe (Dimension. (+ 1 width) height))
-    (.setSize jframe (Dimension. width height))))
 
 (defn reload
   []
@@ -242,30 +186,6 @@
                         (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_DELETE 0))
                         (.setMnemonic \D)
                         (.addActionListener on-menu-item-show-dialog)))))))
-  nil)
-
-(defn toolbar-process
-  [{:keys [^JToolBar jtoolbar]
-    :as opts}]
-  (let []
-    (doto jtoolbar
-      #_(.setMargin (Insets. 3 3 3 3))
-      (.add (doto (JButton.)
-              (.setToolTipText "new file")
-              (.setIcon (FontIcon/of org.kordamp.ikonli.codicons.Codicons/NEW_FILE (UIScale/scale 16) Color/BLACK))))
-      (.add (doto (JButton.)
-              (.setToolTipText "open file")
-              (.setIcon (FontIcon/of org.kordamp.ikonli.codicons.Codicons/FOLDER_OPENED (UIScale/scale 16) Color/BLACK))))
-      (.add (doto (JButton.)
-              (.setToolTipText "save")
-              (.setIcon (FontIcon/of org.kordamp.ikonli.codicons.Codicons/SAVE (UIScale/scale 16) Color/BLACK))))
-      (.add (doto (JButton.)
-              (.setToolTipText "undo")
-              (.setIcon (FontIcon/of org.kordamp.ikonli.codicons.Codicons/DISCARD (UIScale/scale 16) Color/BLACK))))
-      (.add (doto (JButton.)
-              (.setToolTipText "redo")
-              (.setIcon (FontIcon/of org.kordamp.ikonli.codicons.Codicons/REDO (UIScale/scale 16) Color/BLACK))))
-      #_(.addSeparator)))
   nil)
 
 (defn host-game-process
@@ -517,74 +437,6 @@
       (.setVisible true)))
   nil)
 
-(defn draw-grid
-  []
-  (let [{:keys [^Canvas canvas
-                ^Graphics2D graphics
-                grid-rows
-                grid-cols]
-         :or {}} {:canvas canvas
-                  :graphics graphics
-                  :grid-rows grid-rows
-                  :grid-cols grid-cols}
-
-        row-height (/ (.getHeight canvas) grid-rows)
-        col-width (/ (.getWidth canvas) grid-cols)]
-    (doseq [row-i (range grid-rows)]
-      (let [y (* row-i row-height)]
-        (.drawLine graphics 0 y (.getWidth canvas) y)))
-    (doseq [col-i (range grid-cols)]
-      (let [x (* col-i col-width)]
-        (.drawLine graphics x 0 x (.getHeight canvas))))))
-
-(defn canvas-process
-  [{:keys [^JPanel jcanvas-panel
-           ^Canvas canvas]
-    :or {}
-    :as opts}]
-  (let []
-
-    (doto jcanvas-panel
-      (.setLayout (MigLayout. "insets 0"
-                              "[grow,shrink,fill]"
-                              "[grow,shrink,fill]") #_(BoxLayout. canvas-panel BoxLayout/X_AXIS))
-      #_(.setBorder (EmptyBorder. #_top 0 #_left 0 #_bottom 50 #_right 50)))
-
-    (doto canvas
-      #_(.setPreferredSize (Dimension. canvas-width canvas-height))
-      (.addMouseListener (reify MouseListener
-                           (mouseClicked
-                            [_ event]
-                            (println :coordinate [(.getX ^MouseEvent event) (.getY ^MouseEvent event)])
-
-                            (->>
-                             (let [locations| (->
-                                               [{:row 1 :col 1}
-                                                {:row 3 :col 3}
-                                                {:row (rand-int 10) :col (rand-int 10)}
-                                                {:row (rand-int 10) :col (rand-int 10)}
-                                                {:row (rand-int 10) :col (rand-int 10)}
-                                                {:row (rand-int 10) :col (rand-int 10)}]
-                                               (to-chan!))]
-                               (go
-                                 (loop []
-                                   (when-let [value (<! locations|)]
-                                     (<! (timeout 1000))
-                                     (clear-canvas)
-                                     (draw-grid)
-                                     (draw-line)
-                                     (draw-word)
-                                     (draw-Cara value)
-                                     (recur)))))))
-                           (mouseEntered [_ event])
-                           (mouseExited [_ event])
-                           (mousePressed [_ event])
-                           (mouseReleased [_ event]))))
-
-    #_(.setRightComponent split-pane canvas)
-
-    (.add jcanvas-panel canvas "width 100%!,height 100%!")))
-
 (defn -main
   [& args]
   (println ":_ Mandalorian isn't a race")
@@ -618,11 +470,8 @@
   (let [screenshotsMode? (Boolean/parseBoolean (System/getProperty "flatlaf.demo.screenshotsMode"))
 
         jframe (JFrame. jframe-title)
-        canvas (Canvas.)
         jmenubar (JMenuBar.)
-        jtoolbar (JToolBar.)
-        jroot-panel (JPanel.)
-        jcanvas-panel (JPanel.)]
+        jroot-panel (JPanel.)]
 
     (clojure.java.io/make-parents program-data-dirpath)
     (reset! stateA {:Cara-Dune-row 1
@@ -682,7 +531,7 @@
                                     (reify ComponentListener
                                       (componentHidden [_ event])
                                       (componentMoved [_ event])
-                                      (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
+                                      (componentResized [_ event])
                                       (componentShown [_ event]))))
            (.addWindowListener (proxy [WindowAdapter] []
                                  (windowClosing [event]
@@ -696,23 +545,13 @@
                                    "[grow,shrink,fill]"
                                    "[grow,shrink,fill]")))
 
-         (when-let [url (clojure.java.io/resource "icon.png")]
-           (.setIconImage jframe (.getImage (ImageIcon. url))))
+         (.add jroot-panel (JTextField. "Word") "id Word, pos 50%-Word.w 50%-Word.h" #_"dock center,width 100 :100%:100%")
 
          (menubar-process
           {:jmenubar jmenubar
            :jframe jframe
            :menubar| ops|})
          (.setJMenuBar jframe jmenubar)
-
-         #_(Cara-Dune.kiwis/toolbar-process
-            {:jtoolbar jtoolbar})
-         #_(.add jroot-panel jtoolbar "dock north")
-
-         (canvas-process
-          {:jcanvas-panel jcanvas-panel
-           :canvas canvas})
-         (.add jroot-panel jcanvas-panel "dock west,width 100%:100%:100%, height 1:100%:")
 
          (.setPreferredSize jframe
                             (let [size (-> (Toolkit/getDefaultToolkit) (.getScreenSize))]
@@ -729,25 +568,20 @@
              #_(.add panel)
              (.setVisible true))
 
-         #_(println :before (.getGraphics canvas))
          (doto jframe
            (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
            (.pack)
            (.setLocationRelativeTo nil)
            (.setVisible true))
-         #_(println :after (.getGraphics canvas))
 
          (alter-var-root #'Cara-Dune.main/jframe (constantly jframe))
-         (alter-var-root #'Cara-Dune.main/canvas (constantly canvas))
-         (alter-var-root #'Cara-Dune.main/graphics (constantly (.getGraphics canvas)))
          (alter-var-root #'Cara-Dune.main/jroot-panel (constantly jroot-panel))
 
          (remove-watch stateA :watch-fn)
          (add-watch stateA :watch-fn
                     (fn [ref wathc-key old-state new-state]
 
-                      (when (not= old-state new-state)
-                        (put! canvas-draw| true))))
+                      (when (not= old-state new-state))))
 
          (remove-watch settingsA :main)
          (add-watch settingsA :main
@@ -757,49 +591,9 @@
                          (run [_]
                            (if (:apricotseed? @settingsA)
                              (do nil)
-                             (do nil))
-                           (force-resize))))))
-         (reset! settingsA @settingsA)
+                             (do nil)))))))
+         (reset! settingsA @settingsA))))
 
-         (do
-           
-
-           (force-resize)
-
-           #_(go
-               (<! (timeout 50))
-               (Cara-Dune.beans/print-ns-fns-docs 'Cara-Dune.main eval|))))))
-
-
-    (go
-      (loop [timeout| nil]
-        (let [[value port] (alts! (concat [resize|] (when timeout| [timeout|])))]
-          (condp = port
-
-            resize|
-            (let []
-              #_(println :resize)
-              (recur (timeout 500)))
-
-            timeout|
-            (let []
-              (>! canvas-draw| true)
-              (recur nil))))))
-
-    (go
-      (loop []
-        (let [[value port] (alts! [canvas-draw|])]
-          (condp = port
-            canvas-draw|
-            (let []
-              (SwingUtilities/invokeLater
-               (reify Runnable
-                 (run [_]
-                   (clear-canvas)
-                   (draw-grid)
-                   (draw-line)
-                   (draw-word))))
-              (recur))))))
 
     (go
       (loop []

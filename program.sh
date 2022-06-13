@@ -23,14 +23,6 @@ tag(){
   echo $TAG
 }
 
-identicon(){
-  clojure \
-    -X:Zazu Zazu.core/process \
-    :word '"Cara-Dune"' \
-    :filename '"out/identicon/icon.png"' \
-    :size 256
-}
-
 jar(){
 
   rm -rf out/*.jar
@@ -40,11 +32,10 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Cara-Dune.main \
     :filename "\"out/Cara-Dune-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/identicon"]'
+    :paths '["src"]'
 }
 
 release(){
-  identicon
   jar
 }
 
