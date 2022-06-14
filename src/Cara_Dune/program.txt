@@ -56,7 +56,7 @@ i will be a question-challenge-course game - i am a game of words and text
     Jesus challenge - simple yes or no
     raisins - choose a challenge
     kiwis - 4-multiple choice
-    salt - programmatic challenge - clojure repl
+    salt - vegan challenge
     carrots - input number answer
     rolled-oats - input text answer
   my course will be hexagons - a map will have green tone like the planet in The-Beliver episode
