@@ -21,6 +21,7 @@
    [Cara-Dune.kiwis]
    [Cara-Dune.bananas]
    [Cara-Dune.pears]
+   [Cara-Dune.apricots]
    [Cara-Dune.salt]
    [Cara-Dune.rolled-oats])
   (:import
@@ -90,6 +91,7 @@
    '[Cara-Dune.kiwis]
    '[Cara-Dune.bananas]
    '[Cara-Dune.pears]
+   '[Cara-Dune.apricots]
    '[Cara-Dune.salt]
    '[Cara-Dune.rolled-oats]
    '[Cara-Dune.main]

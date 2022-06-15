@@ -54,7 +54,8 @@ i will be a question-challenge-course game - i am a game of words and text
   i will take best from Conquiztador - having a map, a course and answering quetions and challenges
   my challenges will be
     Jesus challenge - simple yes or no
-    raisins - choose a challenge
+    raisins - random challenge
+    apricots - choose a challenge
     kiwis - 4-multiple choice
     bananas - input number answer
     pears - input list answer
