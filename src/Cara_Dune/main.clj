@@ -15,15 +15,13 @@
 
    [datahike.api]
    [taoensso.timbre]
-   
+
    [Cara-Dune.seed]
-   [Cara-Dune.raisins]
    [Cara-Dune.kiwis]
-   [Cara-Dune.bananas]
-   [Cara-Dune.pears]
-   [Cara-Dune.apricots]
+   [Cara-Dune.raisins]
    [Cara-Dune.salt]
-   [Cara-Dune.rolled-oats])
+   [Cara-Dune.rolled-oats]
+   [Cara-Dune.bananas])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -87,13 +85,11 @@
   []
   (require
    '[Cara-Dune.seed]
-   '[Cara-Dune.raisins]
    '[Cara-Dune.kiwis]
-   '[Cara-Dune.bananas]
-   '[Cara-Dune.pears]
-   '[Cara-Dune.apricots]
+   '[Cara-Dune.raisins]
    '[Cara-Dune.salt]
    '[Cara-Dune.rolled-oats]
+   '[Cara-Dune.bananas]
    '[Cara-Dune.main]
    :reload))
 
