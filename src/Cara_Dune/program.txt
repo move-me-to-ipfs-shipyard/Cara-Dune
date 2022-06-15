@@ -56,8 +56,9 @@ i will be a question-challenge-course game - i am a game of words and text
     Jesus challenge - simple yes or no
     raisins - choose a challenge
     kiwis - 4-multiple choice
+    bananas - input number answer
+    pears - input list answer
     salt - vegan challenge
-    carrots - input number answer
     rolled-oats - input text answer
   my course will be hexagons - a map will have green tone like the planet in The-Beliver episode
   players move along the course from bottom left towards the flag - in top right - as one hero on the map - Cara-Dune

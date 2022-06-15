@@ -19,8 +19,9 @@
    [Cara-Dune.seed]
    [Cara-Dune.raisins]
    [Cara-Dune.kiwis]
+   [Cara-Dune.bananas]
+   [Cara-Dune.pears]
    [Cara-Dune.salt]
-   [Cara-Dune.carrots]
    [Cara-Dune.rolled-oats])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
@@ -87,8 +88,9 @@
    '[Cara-Dune.seed]
    '[Cara-Dune.raisins]
    '[Cara-Dune.kiwis]
+   '[Cara-Dune.bananas]
+   '[Cara-Dune.pears]
    '[Cara-Dune.salt]
-   '[Cara-Dune.carrots]
    '[Cara-Dune.rolled-oats]
    '[Cara-Dune.main]
    :reload))
