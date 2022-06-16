@@ -57,7 +57,7 @@ i will be a question-challenge-course game - i am a game of words and text
     raisins - random challenge
     apricots - choose a challenge
     kiwis - 4-multiple choice
-    bananas - input number answer
+    pears - input number answer
     pears - input list answer
     salt - vegan challenge
     rolled-oats - input text answer
