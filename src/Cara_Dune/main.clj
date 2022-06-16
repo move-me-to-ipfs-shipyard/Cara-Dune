@@ -572,7 +572,7 @@
                               :settingsA settingsA})
 
            (discover-process
-            {:jpanel-tab (:raisins tabs)
+            {:jpanel-tab (:kiwis tabs)
              :ops| ops|
              :gamesA gamesA
              :gameA gameA
