@@ -20,14 +20,15 @@
    [Cara-Dune.kiwis]
    [Cara-Dune.raisins]
    [Cara-Dune.salt]
-   [Cara-Dune.rolled-oats]
+   [Cara-Dune.oats]
    [Cara-Dune.bananas])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
-   (javax.swing DefaultListSelectionModel JCheckBox)
+   (javax.swing DefaultListSelectionModel JCheckBox JTabbedPane)
    (javax.swing.border EmptyBorder)
    (javax.swing.table DefaultTableModel)
+   (javax.swing.plaf.basic BasicTabbedPaneUI)
    (javax.swing.event DocumentListener DocumentEvent ListSelectionListener ListSelectionEvent)
    (java.awt Toolkit Dimension)
    (javax.swing.text SimpleAttributeSet StyleConstants JTextComponent)
@@ -71,6 +72,7 @@
 (defonce cancel-sub| (chan 1))
 (defonce cancel-pub| (chan 1))
 (defonce ops| (chan 10))
+(defonce tabs| (chan 1))
 (defonce table| (chan (sliding-buffer 10)))
 (defonce sub| (chan (sliding-buffer 10)))
 (def ^:dynamic ^JFrame jframe nil)
@@ -88,7 +90,7 @@
    '[Cara-Dune.kiwis]
    '[Cara-Dune.raisins]
    '[Cara-Dune.salt]
-   '[Cara-Dune.rolled-oats]
+   '[Cara-Dune.oats]
    '[Cara-Dune.bananas]
    '[Cara-Dune.main]
    :reload))
@@ -112,12 +114,21 @@
               (.setText "program")
               (.setMnemonic \F)
               (.add (doto (JMenuItem.)
-                      (.setText "game")
+                      (.setText "kiwis")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! menubar| {:op :game}))))))
+                                          (put! tabs| {:op :tab :tab-name :kiwis})
+                                          #_(put! menubar| {:op :game}))))))
+              (.add (doto (JMenuItem.)
+                      (.setText "raisins")
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \H)
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! tabs| {:op :tab :tab-name :raisins})
+                                          #_(put! menubar| {:op :game}))))))
               #_(.add (doto (JMenuItem.)
                         (.setText "join")
                         (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_J (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
@@ -129,19 +140,29 @@
                         (.setMnemonic \O)
                         (.addActionListener on-menu-item-show-dialog)))
               (.add (doto (JMenuItem.)
-                      (.setText "discover")
+                      (.setText "oats")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_D (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \D)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! menubar| {:op :discover}))))))
+                                          (put! tabs| {:op :tab :tab-name :oats})
+                                          #_(put! menubar| {:op :discover}))))))
               (.add (doto (JMenuItem.)
-                      (.setText "settings")
+                      (.setText "salt")
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \H)
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! tabs| {:op :tab :tab-name :salt})
+                                          #_(put! menubar| {:op :game}))))))
+              (.add (doto (JMenuItem.)
+                      (.setText "bananas")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \S)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! menubar| {:op :settings}))))))
+                                          (put! tabs| {:op :tab :tab-name :bananas})
+                                          #_(put! menubar| {:op :settings}))))))
               (.add (doto (JMenuItem.)
                       (.setText "exit")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_Q (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
@@ -225,16 +246,14 @@
   nil)
 
 (defn discover-process
-  [{:keys [^JFrame root-jframe
-           ^JFrame jframe
+  [{:keys [^JPanel jpanel-tab
            ops|
            gamesA
            gameA
            stateA]
     :or {}
     :as opts}]
-  (let [root-panel (JPanel.)
-        jtable (JTable.)
+  (let [jtable (JTable.)
         jscroll-pane (JScrollPane.)
 
         jbutton-host (JButton. "host")
@@ -257,9 +276,6 @@
                                                [(object-array)
                                                 (object-array
                                                  [(str (java.util.UUID/randomUUID)) 10])]))]
-
-    (doto jframe
-      (.add root-panel))
 
     (doto jtable
       (.setModel table-model)
@@ -304,7 +320,7 @@
            (put! ops| {:op :leave})
            #_(.dispose jframe)))))
 
-    (doto root-panel
+    (doto jpanel-tab
       (.setLayout (MigLayout. "insets 10"))
       (.add jscroll-pane "cell 0 0 3 1, width 100%")
       (.add jtext-field-frequency "cell 0 1")
@@ -312,9 +328,6 @@
       (.add jbutton-join "cell 0 2")
       (.add jbutton-open "cell 0 2")
       (.add jbutton-leave "cell 0 2"))
-
-    (.setPreferredSize jframe (Dimension. (* 0.8 (.getWidth root-jframe))
-                                          (* 0.8 (.getHeight root-jframe))))
 
     (remove-watch gameA :discover-process)
     (add-watch gameA :discover-process
@@ -375,41 +388,27 @@
                                   value)
                                  ^"[Ljava.lang.Object;"
                                  column-names))))
-            (recur))))
-
-    (doto jframe
-      (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
-      (.pack)
-      (.setLocationRelativeTo root-jframe)
-      (.setVisible true)))
+            (recur)))))
   nil)
 
 (defn settings-process
-  [{:keys [^JFrame root-jframe
-           ^JFrame jframe
+  [{:keys [^JPanel jpanel-tab
            ops|
            settingsA]
     :or {}
     :as opts}]
-  (let [root-panel (JPanel.)
-        jscroll-pane (JScrollPane.)
+  (let [jscroll-pane (JScrollPane.)
 
         jcheckbox-apricotseed (JCheckBox.)]
 
-    (doto jscroll-pane
-      (.setViewportView root-panel)
-      (.setHorizontalScrollBarPolicy ScrollPaneConstants/HORIZONTAL_SCROLLBAR_NEVER))
+    #_(doto jscroll-pane
+        (.setViewportView jpanel-tab)
+        (.setHorizontalScrollBarPolicy ScrollPaneConstants/HORIZONTAL_SCROLLBAR_NEVER))
 
-    (doto jframe
-      (.add root-panel))
-
-    (doto root-panel
+    (doto jpanel-tab
       (.setLayout (MigLayout. "insets 10"))
       (.add (JLabel. ":apricotseed?") "cell 0 0")
       #_(.add jcheckbox-apricotseed "cell 0 0"))
-
-    (.setPreferredSize jframe (Dimension. (* 0.8 (.getWidth root-jframe))
-                                          (* 0.8 (.getHeight root-jframe))))
 
     (.addActionListener jcheckbox-apricotseed
                         (reify ActionListener
@@ -426,13 +425,7 @@
                  (SwingUtilities/invokeLater
                   (reify Runnable
                     (run [_]
-                      (.setSelected jcheckbox-apricotseed (:apricotseed? new-state)))))))
-
-    (doto jframe
-      (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
-      (.pack)
-      (.setLocationRelativeTo root-jframe)
-      (.setVisible true)))
+                      (.setSelected jcheckbox-apricotseed (:apricotseed? new-state))))))))
   nil)
 
 (defn -main
@@ -543,7 +536,58 @@
                                    "[grow,shrink,fill]"
                                    "[grow,shrink,fill]")))
 
-         (.add jroot-panel (JTextField. "Word") "id Word, pos 50%-Word.w 50%-Word.h" #_"dock center,width 100 :100%:100%")
+         
+         (let [jtabbed-pane (JTabbedPane.)
+               tabs {:kiwis (JPanel.)
+                     :raisins (JPanel.)
+                     :oats (JPanel.)
+                     :salt (JPanel.)
+                     :bananas (JPanel.)}]
+
+           (doto jtabbed-pane
+             (.setTabLayoutPolicy JTabbedPane/SCROLL_TAB_LAYOUT)
+             (.setUI (proxy [BasicTabbedPaneUI] []
+                       (calculateTabAreaHeight [tab-placement run-count max-tab-height]
+                         (int 0))))
+             (.addTab "kiwis" (:kiwis tabs))
+             (.addTab "raisins" (:raisins tabs))
+             (.addTab "oats" (:oats tabs))
+             (.addTab "salt" (:salt tabs))
+             (.addTab "bananas" (:bananas tabs))
+             (.setSelectedComponent (:oats tabs)))
+
+           (go
+             (loop []
+               (when-let [value (<! tabs|)]
+                 (SwingUtilities/invokeLater
+                  (reify Runnable
+                    (run [_]
+                      (.setSelectedComponent jtabbed-pane ^JPanel ((:tab-name value) tabs)))))
+                 (recur))))
+
+           (Cara-Dune.oats/process {:jpanel-tab (:oats tabs)})
+
+           (settings-process {:jpanel-tab (:bananas tabs)
+                              :ops| ops|
+                              :settingsA settingsA})
+
+           (discover-process
+            {:jpanel-tab (:raisins tabs)
+             :ops| ops|
+             :gamesA gamesA
+             :gameA gameA
+             :stateA stateA})
+
+           (doto ^JPanel (:oats tabs)
+             (.setLayout (MigLayout. "insets 10"
+                                     "[grow,shrink,fill]"
+                                     "[grow,shrink,fill]")))
+
+           (.add ^JPanel (:oats tabs) (JTextField. "Word") "id Word, pos 50%-Word.w 50%-Word.h" #_"dock center,width 100 :100%:100%")
+
+           (.add jroot-panel jtabbed-pane))
+         
+         
 
          (menubar-process
           {:jmenubar jmenubar
