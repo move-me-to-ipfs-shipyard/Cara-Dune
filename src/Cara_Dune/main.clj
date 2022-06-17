@@ -21,7 +21,7 @@
    [Cara-Dune.raisins]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
-   [Cara-Dune.pears])
+   [Cara-Dune.bananas])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -91,7 +91,7 @@
    '[Cara-Dune.raisins]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
-   '[Cara-Dune.pears]
+   '[Cara-Dune.bananas]
    '[Cara-Dune.main]
    :reload))
 
@@ -156,12 +156,12 @@
                                           (put! tabs| {:op :tab :tab-name :salt})
                                           #_(put! menubar| {:op :game}))))))
               (.add (doto (JMenuItem.)
-                      (.setText "pears")
+                      (.setText "bananas")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \S)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :pears})
+                                          (put! tabs| {:op :tab :tab-name :bananas})
                                           #_(put! menubar| {:op :settings}))))))
               (.add (doto (JMenuItem.)
                       (.setText "exit")
@@ -542,7 +542,7 @@
                      :raisins (JPanel.)
                      :oats (JPanel.)
                      :salt (JPanel.)
-                     :pears (JPanel.)}]
+                     :bananas (JPanel.)}]
 
            (doto jtabbed-pane
              (.setTabLayoutPolicy JTabbedPane/SCROLL_TAB_LAYOUT)
@@ -553,7 +553,7 @@
              (.addTab "raisins" (:raisins tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "salt" (:salt tabs))
-             (.addTab "pears" (:pears tabs))
+             (.addTab "bananas" (:bananas tabs))
              (.setSelectedComponent (:oats tabs)))
 
            (go
@@ -567,7 +567,7 @@
 
            (Cara-Dune.oats/process {:jpanel-tab (:oats tabs)})
 
-           (settings-process {:jpanel-tab (:pears tabs)
+           (settings-process {:jpanel-tab (:bananas tabs)
                               :ops| ops|
                               :settingsA settingsA})
 
