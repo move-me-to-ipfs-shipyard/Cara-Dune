@@ -54,13 +54,13 @@ i will be a question-challenge-course game - i am a game of words and text
   i will take best from Conquiztador - having a map, a course and answering quetions and challenges
   my challenges will be
     Jesus challenge - simple yes or no
-    raisins - random challenge
-    apricots - choose a challenge
     kiwis - 4-multiple choice
-    bananas - input number answer
-    pears - input list answer
+    popcorn - input number answer
     salt - vegan challenge
     rolled-oats - input text answer
+    raisins - random challenge
+    - input list answer
+    - choose a challenge
   my course will be hexagons - a map will have green tone like the planet in The-Beliver episode
   players move along the course from bottom left towards the flag - in top right - as one hero on the map - Cara-Dune
   players take turns to choose the next hexagon, the next challenge

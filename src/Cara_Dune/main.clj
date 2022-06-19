@@ -21,7 +21,7 @@
    [Cara-Dune.raisins]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
-   [Cara-Dune.bananas])
+   [Cara-Dune.popcorn])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -91,7 +91,7 @@
    '[Cara-Dune.raisins]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
-   '[Cara-Dune.bananas]
+   '[Cara-Dune.popcorn]
    '[Cara-Dune.main]
    :reload))
 
@@ -122,12 +122,20 @@
                                           (put! tabs| {:op :tab :tab-name :kiwis})
                                           #_(put! menubar| {:op :game}))))))
               (.add (doto (JMenuItem.)
-                      (.setText "raisins")
+                      (.setText "popcorn")
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \S)
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! tabs| {:op :tab :tab-name :popcorn})
+                                          #_(put! menubar| {:op :settings}))))))
+              (.add (doto (JMenuItem.)
+                      (.setText "salt")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :raisins})
+                                          (put! tabs| {:op :tab :tab-name :salt})
                                           #_(put! menubar| {:op :game}))))))
               #_(.add (doto (JMenuItem.)
                         (.setText "join")
@@ -148,21 +156,14 @@
                                           (put! tabs| {:op :tab :tab-name :oats})
                                           #_(put! menubar| {:op :discover}))))))
               (.add (doto (JMenuItem.)
-                      (.setText "salt")
+                      (.setText "raisins")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :salt})
+                                          (put! tabs| {:op :tab :tab-name :raisins})
                                           #_(put! menubar| {:op :game}))))))
-              (.add (doto (JMenuItem.)
-                      (.setText "bananas")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \S)
-                      (.addActionListener
-                       (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :bananas})
-                                          #_(put! menubar| {:op :settings}))))))
+
               (.add (doto (JMenuItem.)
                       (.setText "exit")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_Q (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
@@ -539,10 +540,10 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:kiwis (JPanel.)
-                     :raisins (JPanel.)
-                     :oats (JPanel.)
+                     :popcorn (JPanel.)
                      :salt (JPanel.)
-                     :bananas (JPanel.)}]
+                     :oats (JPanel.)
+                     :raisins (JPanel.)}]
 
            (doto jtabbed-pane
              (.setTabLayoutPolicy JTabbedPane/SCROLL_TAB_LAYOUT)
@@ -550,10 +551,10 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "kiwis" (:kiwis tabs))
-             (.addTab "raisins" (:raisins tabs))
-             (.addTab "oats" (:oats tabs))
+             (.addTab "popcorn" (:popcorn tabs))
              (.addTab "salt" (:salt tabs))
-             (.addTab "bananas" (:bananas tabs))
+             (.addTab "oats" (:oats tabs))
+             (.addTab "raisins" (:raisins tabs))
              (.setSelectedComponent (:oats tabs)))
 
            (go
@@ -567,7 +568,7 @@
 
            (Cara-Dune.oats/process {:jpanel-tab (:oats tabs)})
 
-           (settings-process {:jpanel-tab (:bananas tabs)
+           (settings-process {:jpanel-tab (:popcorn tabs)
                               :ops| ops|
                               :settingsA settingsA})
 
