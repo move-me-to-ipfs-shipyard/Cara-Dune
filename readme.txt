@@ -1,2 +1,1 @@
-:Co-Pilot i saw your planet destroyed - i was on the Death Star
-:_ which one?
+one X-Wing? great - we're saved
