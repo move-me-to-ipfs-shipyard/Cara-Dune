@@ -1,4 +1,4 @@
-(ns Cara-Dune.salt
+(ns Cara-Dune.carrots
   (:require
    [clojure.core.async
     :refer [chan put! take! close! offer! to-chan! timeout thread
