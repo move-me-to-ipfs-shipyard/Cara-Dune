@@ -18,6 +18,7 @@
 
    [Cara-Dune.seed]
    [Cara-Dune.raisins]
+   [Cara-Dune.popcorn]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
    [Cara-Dune.kiwis])
@@ -87,6 +88,7 @@
   (require
    '[Cara-Dune.seed]
    '[Cara-Dune.kiwis]
+   '[Cara-Dune.popcorn]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
    '[Cara-Dune.raisins]
@@ -114,17 +116,26 @@
               
               (.add (doto (JMenuItem.)
                       (.setText "kiwis")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \H)
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_F (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \F)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :kiwis})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
+                      (.setText "popcorn")
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_P (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \P)
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! tabs| {:op :tab :tab-name :popcorn})
+                                          #_(put! menubar| {:op :game}))))))
+              
+              (.add (doto (JMenuItem.)
                       (.setText "salt")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \H)
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \S)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :salt})
@@ -141,8 +152,8 @@
                         (.addActionListener on-menu-item-show-dialog)))
               (.add (doto (JMenuItem.)
                       (.setText "oats")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_D (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \D)
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_O (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \O)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :oats})
@@ -150,8 +161,8 @@
               
               (.add (doto (JMenuItem.)
                       (.setText "raisins")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \H)
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_W (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \W)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :raisins})
@@ -533,6 +544,7 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:kiwis (JPanel.)
+                     :popcorn (JPanel.)
                      :salt (JPanel.)
                      :oats (JPanel.)
                      :raisins (JPanel.)}]
@@ -543,6 +555,7 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "kiwis" (:kiwis tabs))
+             (.addTab "popcorn" (:popcorn tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "raisins" (:raisins tabs))
