@@ -19,7 +19,7 @@
    [Cara-Dune.seed]
    [Cara-Dune.pears]
    [Cara-Dune.raisins]
-   [Cara-Dune.salty-peanuts]
+   [Cara-Dune.salt]
    [Cara-Dune.oats]
    [Cara-Dune.kiwis])
   (:import
@@ -89,7 +89,7 @@
    '[Cara-Dune.seed]
    '[Cara-Dune.pears]
    '[Cara-Dune.raisins]
-   '[Cara-Dune.salty-peanuts]
+   '[Cara-Dune.salt]
    '[Cara-Dune.oats]
    '[Cara-Dune.kiwis]
    '[Cara-Dune.main]
@@ -131,12 +131,12 @@
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
-                      (.setText "salty-peanuts")
+                      (.setText "salt")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :salty-peanuts})
+                                          (put! tabs| {:op :tab :tab-name :salt})
                                           #_(put! menubar| {:op :game}))))))
               #_(.add (doto (JMenuItem.)
                         (.setText "join")
@@ -543,7 +543,7 @@
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:pears (JPanel.)
                      :raisins (JPanel.)
-                     :salty-peanuts (JPanel.)
+                     :salt (JPanel.)
                      :oats (JPanel.)
                      :kiwis (JPanel.)}]
 
@@ -554,7 +554,7 @@
                          (int 0))))
              (.addTab "pears" (:pears tabs))
              (.addTab "raisins" (:raisins tabs))
-             (.addTab "salty-peanuts" (:salty-peanuts tabs))
+             (.addTab "salt" (:salt tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "kiwis" (:kiwis tabs))
              (.setSelectedComponent (:oats tabs)))

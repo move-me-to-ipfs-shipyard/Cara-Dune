@@ -56,7 +56,7 @@ i will be a question-challenge-course game - i am a game of words and text
     Jesus challenge - simple yes or no
     kiwis - 4-multiple choice
     raisins - random challenge
-    salty-peanuts - choose vegan challenge
+    salt - vegan challenge
     rolled-oats - input text answer
     caarots - input number answer 
     - input list answer

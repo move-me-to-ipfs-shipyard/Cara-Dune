@@ -1,4 +1,4 @@
-(ns Cara-Dune.salty-peanuts
+(ns Cara-Dune.salt
   (:require
    [clojure.core.async
     :refer [chan put! take! close! offer! to-chan! timeout thread
