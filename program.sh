@@ -25,7 +25,7 @@ tag(){
 
 jar(){
 
-  rm -rf out/*.jar
+  rm -rf out/*.jar out/classes
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
   clojure \
