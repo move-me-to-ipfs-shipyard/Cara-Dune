@@ -20,8 +20,7 @@
    [Cara-Dune.kiwis]
    [Cara-Dune.raisins]
    [Cara-Dune.salty-peanuts]
-   [Cara-Dune.oats]
-   [Cara-Dune.carrots])
+   [Cara-Dune.oats])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -88,7 +87,6 @@
   (require
    '[Cara-Dune.seed]
    '[Cara-Dune.kiwis]
-   '[Cara-Dune.carrots]
    '[Cara-Dune.salty-peanuts]
    '[Cara-Dune.oats]
    '[Cara-Dune.raisins]
@@ -121,14 +119,7 @@
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :kiwis})
                                           #_(put! menubar| {:op :game}))))))
-              (.add (doto (JMenuItem.)
-                      (.setText "carrots")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_S (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \S)
-                      (.addActionListener
-                       (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :carrots})
-                                          #_(put! menubar| {:op :settings}))))))
+              
               (.add (doto (JMenuItem.)
                       (.setText "salty-peanuts")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
@@ -540,7 +531,6 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:kiwis (JPanel.)
-                     :carrots (JPanel.)
                      :salty-peanuts (JPanel.)
                      :oats (JPanel.)
                      :raisins (JPanel.)}]
@@ -551,7 +541,6 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "kiwis" (:kiwis tabs))
-             (.addTab "carrots" (:carrots tabs))
              (.addTab "salty-peanuts" (:salty-peanuts tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "raisins" (:raisins tabs))
@@ -568,7 +557,7 @@
 
            (Cara-Dune.oats/process {:jpanel-tab (:oats tabs)})
 
-           (settings-process {:jpanel-tab (:carrots tabs)
+           (settings-process {:jpanel-tab (:raisins tabs)
                               :ops| ops|
                               :settingsA settingsA})
 
