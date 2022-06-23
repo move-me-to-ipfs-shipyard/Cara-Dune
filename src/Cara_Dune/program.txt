@@ -58,7 +58,7 @@ i will be a question-challenge-course game - i am a game of words and text
     raisins - random challenge
     salt - vegan challenge
     rolled-oats - input text answer
-    caarots - input number answer 
+    - input number answer 
     - input list answer
     - choose a challenge
   my course will be hexagons - a map will have green tone like the planet in The-Beliver episode

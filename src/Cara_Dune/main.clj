@@ -17,7 +17,6 @@
    [taoensso.timbre]
 
    [Cara-Dune.seed]
-   [Cara-Dune.pears]
    [Cara-Dune.raisins]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
@@ -87,11 +86,10 @@
   []
   (require
    '[Cara-Dune.seed]
-   '[Cara-Dune.pears]
-   '[Cara-Dune.raisins]
+   '[Cara-Dune.kiwis]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
-   '[Cara-Dune.kiwis]
+   '[Cara-Dune.raisins]
    '[Cara-Dune.main]
    :reload))
 
@@ -113,21 +111,14 @@
       (.add (doto (JMenu.)
               (.setText "program")
               (.setMnemonic \F)
+              
               (.add (doto (JMenuItem.)
-                      (.setText "pears")
+                      (.setText "kiwis")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :pears})
-                                          #_(put! menubar| {:op :game}))))))
-              (.add (doto (JMenuItem.)
-                      (.setText "raisins")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \H)
-                      (.addActionListener
-                       (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :raisins})
+                                          (put! tabs| {:op :tab :tab-name :kiwis})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -158,12 +149,12 @@
                                           #_(put! menubar| {:op :discover}))))))
               
               (.add (doto (JMenuItem.)
-                      (.setText "kiwis")
+                      (.setText "raisins")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :kiwis})
+                                          (put! tabs| {:op :tab :tab-name :raisins})
                                           #_(put! menubar| {:op :game}))))))
 
               (.add (doto (JMenuItem.)
@@ -541,22 +532,20 @@
 
          
          (let [jtabbed-pane (JTabbedPane.)
-               tabs {:pears (JPanel.)
-                     :raisins (JPanel.)
+               tabs {:kiwis (JPanel.)
                      :salt (JPanel.)
                      :oats (JPanel.)
-                     :kiwis (JPanel.)}]
+                     :raisins (JPanel.)}]
 
            (doto jtabbed-pane
              (.setTabLayoutPolicy JTabbedPane/SCROLL_TAB_LAYOUT)
              (.setUI (proxy [BasicTabbedPaneUI] []
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
-             (.addTab "pears" (:pears tabs))
-             (.addTab "raisins" (:raisins tabs))
+             (.addTab "kiwis" (:kiwis tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "oats" (:oats tabs))
-             (.addTab "kiwis" (:kiwis tabs))
+             (.addTab "raisins" (:raisins tabs))
              (.setSelectedComponent (:oats tabs)))
 
            (go
