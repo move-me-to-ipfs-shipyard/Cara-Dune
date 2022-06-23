@@ -17,10 +17,11 @@
    [taoensso.timbre]
 
    [Cara-Dune.seed]
-   [Cara-Dune.kiwis]
+   [Cara-Dune.pears]
    [Cara-Dune.raisins]
    [Cara-Dune.salty-peanuts]
-   [Cara-Dune.oats])
+   [Cara-Dune.oats]
+   [Cara-Dune.kiwis])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -86,10 +87,11 @@
   []
   (require
    '[Cara-Dune.seed]
-   '[Cara-Dune.kiwis]
+   '[Cara-Dune.pears]
+   '[Cara-Dune.raisins]
    '[Cara-Dune.salty-peanuts]
    '[Cara-Dune.oats]
-   '[Cara-Dune.raisins]
+   '[Cara-Dune.kiwis]
    '[Cara-Dune.main]
    :reload))
 
@@ -112,12 +114,20 @@
               (.setText "program")
               (.setMnemonic \F)
               (.add (doto (JMenuItem.)
-                      (.setText "kiwis")
+                      (.setText "pears")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :kiwis})
+                                          (put! tabs| {:op :tab :tab-name :pears})
+                                          #_(put! menubar| {:op :game}))))))
+              (.add (doto (JMenuItem.)
+                      (.setText "raisins")
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \H)
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! tabs| {:op :tab :tab-name :raisins})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -146,13 +156,14 @@
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :oats})
                                           #_(put! menubar| {:op :discover}))))))
+              
               (.add (doto (JMenuItem.)
-                      (.setText "raisins")
+                      (.setText "kiwis")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_H (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \H)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :raisins})
+                                          (put! tabs| {:op :tab :tab-name :kiwis})
                                           #_(put! menubar| {:op :game}))))))
 
               (.add (doto (JMenuItem.)
@@ -530,20 +541,22 @@
 
          
          (let [jtabbed-pane (JTabbedPane.)
-               tabs {:kiwis (JPanel.)
+               tabs {:pears (JPanel.)
+                     :raisins (JPanel.)
                      :salty-peanuts (JPanel.)
                      :oats (JPanel.)
-                     :raisins (JPanel.)}]
+                     :kiwis (JPanel.)}]
 
            (doto jtabbed-pane
              (.setTabLayoutPolicy JTabbedPane/SCROLL_TAB_LAYOUT)
              (.setUI (proxy [BasicTabbedPaneUI] []
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
-             (.addTab "kiwis" (:kiwis tabs))
+             (.addTab "pears" (:pears tabs))
+             (.addTab "raisins" (:raisins tabs))
              (.addTab "salty-peanuts" (:salty-peanuts tabs))
              (.addTab "oats" (:oats tabs))
-             (.addTab "raisins" (:raisins tabs))
+             (.addTab "kiwis" (:kiwis tabs))
              (.setSelectedComponent (:oats tabs)))
 
            (go
