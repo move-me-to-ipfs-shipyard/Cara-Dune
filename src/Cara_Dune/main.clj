@@ -18,7 +18,7 @@
 
    [Cara-Dune.seed]
    [Cara-Dune.raisins]
-   [Cara-Dune.popcorn]
+   [Cara-Dune.peanuts]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
    [Cara-Dune.kiwis])
@@ -88,7 +88,7 @@
   (require
    '[Cara-Dune.seed]
    '[Cara-Dune.kiwis]
-   '[Cara-Dune.popcorn]
+   '[Cara-Dune.peanuts]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
    '[Cara-Dune.raisins]
@@ -124,12 +124,12 @@
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
-                      (.setText "popcorn")
+                      (.setText "peanuts")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_P (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \P)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :popcorn})
+                                          (put! tabs| {:op :tab :tab-name :peanuts})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -544,7 +544,7 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:kiwis (JPanel.)
-                     :popcorn (JPanel.)
+                     :peanuts (JPanel.)
                      :salt (JPanel.)
                      :oats (JPanel.)
                      :raisins (JPanel.)}]
@@ -555,7 +555,7 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "kiwis" (:kiwis tabs))
-             (.addTab "popcorn" (:popcorn tabs))
+             (.addTab "peanuts" (:peanuts tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "raisins" (:raisins tabs))
