@@ -17,10 +17,11 @@
    [taoensso.timbre]
 
    [Cara-Dune.seed]
-   [Cara-Dune.kiwis]
+   [Cara-Dune.raisins]
+   [Cara-Dune.B12]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
-   [Cara-Dune.raisins])
+   [Cara-Dune.kiwis])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -87,6 +88,7 @@
   (require
    '[Cara-Dune.seed]
    '[Cara-Dune.kiwis]
+   '[Cara-Dune.B12]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
    '[Cara-Dune.raisins]
@@ -119,6 +121,15 @@
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :kiwis})
+                                          #_(put! menubar| {:op :game}))))))
+              
+              (.add (doto (JMenuItem.)
+                      (.setText "B12")
+                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_P (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
+                      (.setMnemonic \P)
+                      (.addActionListener
+                       (on-menubar-item (fn [_ event]
+                                          (put! tabs| {:op :tab :tab-name :B12})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -533,6 +544,7 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:kiwis (JPanel.)
+                     :B12 (JPanel.)
                      :salt (JPanel.)
                      :oats (JPanel.)
                      :raisins (JPanel.)}]
@@ -543,6 +555,7 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "kiwis" (:kiwis tabs))
+             (.addTab "B12" (:B12 tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "raisins" (:raisins tabs))
