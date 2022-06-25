@@ -17,11 +17,10 @@
    [taoensso.timbre]
 
    [Cara-Dune.seed]
-   [Cara-Dune.raisins]
-   [Cara-Dune.sunflower-seeds]
+   [Cara-Dune.kiwis]
    [Cara-Dune.salt]
    [Cara-Dune.oats]
-   [Cara-Dune.kiwis])
+   [Cara-Dune.raisins])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -88,7 +87,6 @@
   (require
    '[Cara-Dune.seed]
    '[Cara-Dune.kiwis]
-   '[Cara-Dune.sunflower-seeds]
    '[Cara-Dune.salt]
    '[Cara-Dune.oats]
    '[Cara-Dune.raisins]
@@ -121,15 +119,6 @@
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :kiwis})
-                                          #_(put! menubar| {:op :game}))))))
-              
-              (.add (doto (JMenuItem.)
-                      (.setText "sunflower-seeds")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_P (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \P)
-                      (.addActionListener
-                       (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :sunflower-seeds})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -544,7 +533,6 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:kiwis (JPanel.)
-                     :sunflower-seeds (JPanel.)
                      :salt (JPanel.)
                      :oats (JPanel.)
                      :raisins (JPanel.)}]
@@ -555,7 +543,6 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "kiwis" (:kiwis tabs))
-             (.addTab "sunflower-seeds" (:sunflower-seeds tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "oats" (:oats tabs))
              (.addTab "raisins" (:raisins tabs))
