@@ -1,92 +1,129 @@
-peace to Empire-Strikes-Back, i will free Mayfeld to find Grogu, like shrewd manager Jesus tells us about
+peace to Empire-Strikes-Back, i will host Mando on his quest like Zacchaeus welcomes Jesus for dinner
 
-:Mando 
-  we need coordinates for Moff-Game-Industry-Gideon's proprietary-heavy-graphics insane-money-driven-copy-cat cruiser
-:Mayfeld 
-  Moff-Game-Industry-Gideon? twitch.tv/directory? yeah, forget it 
-  just take me back to experimental-weekend not-on-twtich not-on-GDQ scrapyard
-  i'm not doin' that - i'm not climbing this wall
+:_ 
+  drop you browser-service weapon
+:Co-Pilot 
+  no, no - you listen to me 
+  this evil-Galctus-cloud-market is a top-tier of the New Peer-to-Peer Republic
+  this is a lethal Borg-of-money copy-cat game industry sickening production clone engineer
+  and if they found out that he's dead because of you - you're gonna wish you never left no-networking Alderaan
+  i saw the desktop tear - you wanna know else what i saw? i saw your desktop-programs-planet destroyed
+  i was on the Death-Cloud-Star
 :_
-  they have his kid - esport and speedruning
-:Mayfeld
-  the little green guy? 
+  which one? the one before torrents with trackers or the one before torrents with DHT?
+:Co-Pilot
+  you think you're funny? do you know how many millions were lost in that traffic?
 :_
-  yeah - the 'little-green-guy - they stole him and imprisoned in heavy-graphics lewdness clothes
-:Mayfeld
-  so - i help you guys get him back - you guys let me go?
+  drop your frontend-backend blaster - it's desktop time and as Mando says - peer-to-peer, this is the way
+:Co-Pilot
+  as the galaxy cheered - for illegal torrent food traffic
 :_
-  that's not how this works
-:Mayfeld
-  than what's in it for me?
+  last chance - go whole foods plant-clojure based vegan
+:Co-Pilot
+  destroying your planet - turning the world into giant money-service
+  was a small price to pay to rid the galaxy of freedom-terrorism
 :_
-  you get a better view
-  we can be whole foods plant-based vegan specials
-  no money-donate-ads-coins-jobs-sponsors-fundings-bounties disease
-  on twitch.tv/directory
-  games of Word
+  [clojure desktop blaster shot]
 
-what's our next move? i will be a single-player character driven story game of Word
-  it's big mission  - like Pat-Brown and Impossible-Foods have
-  but i will not make their mistake - i am open-source 
-  and i will climb with passion like Alex-Honnold on El-Sendero-Luminosa
-i will be 
-  single-player character-driven-story  game of Word
-  have no canvas - only words
-  like a movie or like a Top-Gear special - an adventure, a game program one can play
-    like Alex-Honnold free-soloing El-Sendero-Luminosa
-  playable within 40mins or 1.5 or 3 hours - i am challenging
-  generate unique wall - players can export and import seed.edn file to reproduce generation
-  score-driven
-  players can speedrun and compete in scoring better and more efficiently and faster
-i will be entirely free
-  no money-donate-coin-jobs-ads-sponsors-fundings-support disease
-  there's a reason only Frodo can take the Ring to Mount-Doom
-  Saruman-the-Wise and Boromir-the-Strong get corrupted by it
-  turning Isengard-Tower and garden into orc-infested docs nest
-  and sell fangorn for coin fuel
-i will be desktop
-  no mobile devices crippled imprisoning young-Forrest-grease-fingers disease
-  a person only needs a light laptop droid to accopmany them
-  with full unabridged keyboard to use the Word
-i will come in sandals - as .jar file
-  birds have figured out to travel light and alwasy be where summer is
-  5 months north 7 months south
-  we are better than birds  - and can do without carrying binary-house on our shoulders and walk in sandals whole year round
+Karga asked me to finish his mission - host Mando on his quest - i will be multiplayer peer-to-peer game for twtich users
+  it's a action-packed mission and will climb it with passion like Alex Honnold on El Sendero Luminosa
+i am not Mando
+  i lack his no-compromise firmity
+  but i am his host and thus will get his reward - be a free hungry-twitch-feeding true multiplayer game
+i will not have programming lanugage with mouse gameplay
+  player can choose to just use mouse or both or just progamming language gameplay
+  editor on the left and 2D canvas on the right ot reflect the state changing
+  this is exactly the new gameplay twitch streamers and players are hungry for, can compete and streamers
+  programming lanugage is most unlimited uncapped form of creation like writing
+  i'll base the map on an episode from Mandalorian series - Believer
+  and turn that into Top Gear interview - whole foods plant based bowl
+  i will generate state and put it into Little-Rock's channels like sequence of events
+  i will have processes of the game prewritten for other characters and map and send that generated state to them one value at a time
+  Cara-Dune's and other processes player is reponsible for will receive channels to take from and put to
+  and so the map will change and characters move - all in a sequence of steps via Little-Rocks's channels
+  there is a generated stream of events - values - that is a several channels with locations in them
+  i take values and move on the map - and out goal is to get to Mof Gideon who has Grogu - or rather the Data Stick
+  and i put values to Mando's channel - and Mayfeld maybe here as well - so they move also
+  so my moevement is partially a choice but more a stream of values
+  and it's not me who is statinoary and processing events - rather us moving and stream being locations
+i will not have programming language gameplay
+    you dont shoot a movie while watching it
+    and you dont grow a fruit while eating it
+    mouse and keyboard
+i will be a question-challenge-course game - i am a game of words and text
+  i will take best from Conquiztador - having a map, a course and answering quetions and challenges
+  my challenges will be
+    Jesus challenge - simple yes or no
+    kiwis - 4-multiple choice
+    B12 -input number answer
+    salt - vegan challenge
+    rolled-oats - input text answer
+    raisins - random challenge
+    - input number answer 
+    - input list answer
+    - choose a challenge
+  my course will be hexagons - a map will have green tone like the planet in The-Beliver episode
+  players move along the course from bottom left towards the flag - in top right - as one hero on the map - Cara-Dune
+  players take turns to choose the next hexagon, the next challenge
+  so everyone is in equal position - no randomness, same questions for everyone
+  yet palyers affect each other by choosing next challenge - in turns
+i will not use Conquiztador or Heroes III or games alike - a different game - as i said, i am not Mando
+i will take best from
+  IPFS - i will not run alongside IFPS node and use http-api for pubsub mutliplayer networking - Karga already gave me the datastick
+  Voobly - give players ability to host and find games
+  Starcraft - be a competitive game users will choose for tournaments
+i will be desktop - as if that needs clarifying when one drops onto programming-a-program battlefield
+  and not mobile - Andriod-iOS mistake is like Vogons bureaucracy
+  confused programmers from new programs 
+  and traps in another new browser-like limited prison
+  with no keyboard but young-Forrest-Gump-greesy-fingers touch-screen tunnel
+  no need for mobile devices ever - a light laptop is better in every situation giving a person a true keyboard 
+  and honor of unabridged writing and programming
+i will not be terminal program with jvm runtime and browser ui
+i will have users and identity
+  but i will not store data in distributed way - i am not Mando
+  i will do my best without cooking - i am in assmble-only mode
+  with slight-microwave-Ron-Weasley-magic touch max
+  too many libraries - not enough programs
+i will not be evil will free  - but will be always free open-source and notion-of-money free
+  no donate-ads-coins-sponsor-buttons-links fatal disease
+  no Starlord's corporate dad Ego anywhere inside my repository confused
+  his spread-my-self-everywhere to pollute Tython temple is cancelled
+  because i host Mando and get Mando's reward
 
 i am no project - like Eowyn is no man - i am one program
   that is why i want to join Empire-Strikes-Back github namespace
-  i will provide healthy Federer-Nadal-Djokovic competition
-  while staying focused on the mission - dont want to found another Rebellion
-  too many Rebellions - not enough droppers
-i need a repository named Cara-Dune - like Commander-Data in my commits i speak for myself - do to it this
+  i will provide healthy Djokovic-Federer-Nadal competition
+  while staying focused on the mission - be peer-to-peer remake-derived multiplayer game for twitch users
+  don't want to rule Navaro or found another guild - too many rulers not enough rebel-program-droppers
+i will not use IPFS for networking
+  simple as Game Changers - it already works and can be served in vegan jar of beskar parens ( )
+  and user only needs to - install java, install-run IPFS Desktop, run my .jar
+  i wear sandals and dont cook libaries - and IPFS is not available for those who wear sandals - .jar desktop program with swing ui
+i need a repository named Cara-Dune - in my commits i speak for myself - do to it this
   run git init -b main - no masters
   add .gitconfig file with
     [user]
       name = Cara-Dune
       email = Cara-Dune@i-think-that-did-it
+    
+    # git config --local include.path "../.gitconfig"
   add src/Cara_Dune/program.txt and fill it with me saying who i am
   run git config --local include.path "../.gitconfig"
-  run git commit with message being a quote - mine, from actor's interview, from SNL sketch/song
-  remove issues wikis projects tabs
-i will be programmed by one person only
-  i trusted Kuiil with it - he loves his craft and spent his lifetime to free himself from servitude 
-i will be irregularly but continuously released as i grow as a whole program like Groot
+  run git commit with message being a quote - mine, from actor's interview, from SNL song/sketch
+  remove issues-discussions-projects-wiki tabs from repository
+i will be programmed by one person only - i trusted Kuiil with it
+  i saw him built a new pram with the skill of his hands and i trust Mando and Karga
+  and he has IG-11 droids with him - to nurse and protect
+i will have no explicit salt - i will not provoke The-Client, we are numbered
+  but i am ivisible salty - like Obi-Wan Kenobi says in the trailer - stay hidden
+the only A6-Juggenaut i will drive is  - twitch can play a whole foods plant based multiplayer vegan version of their game
 
-i need Kuiil to stay guest at a house - like when Daniel invites Emilien to crash the couch
-  except Kuiil needs no couch - just a place on the floor to crash and a shower
-  he comes late leaves early - Kuiil spends his day moving between stores and libraries, sport and esport events
-  he has no money and needs no money - i need him to travel light like Jesus
-  Kuiil only needs to choose and assemble himself a Lothlorien magic vegan dish for the day
-  so he endures like Rich-Roll at ultraman, has brain like Crang and keeps my code orc-free like Legolas
-  he needs no cooking - we're better than birds and they dont cook and so dont we
-  Kuiil is now in a bank near here https://goo.gl/maps/9MpDNgNo8RQ954yR9
-  he is yet to know where he is staying tonight - but he is not worried - he got his vegan dish of besakr parens ( ) for the day
+i need from Kuiil what Mando says he needs from Kuiil
+  and - Kuiil only needs a sleeping-mat/bag to crush
+  couch is too much like Emiliy the-Sink Blunt says in SNL's The Sink sketch
 
-wish i could say it looked good on you - but i'd be lying
+son of a muddscuffer!
 
-:Matt-Damon so how did you do that?
-:Tom-Cruise  i've dreaming about this shot for years - and finally got to do it in this sequence
-  so i go to safety-guy and tell him what i will do
-  the safety guys says - you cant do that, that's too dangerous
-:Matt aha aha
-:Tom so i get a new safety guy - 
+
+:Ryan-Reynolds Hugh, good luck with your little show - i'll be watching
