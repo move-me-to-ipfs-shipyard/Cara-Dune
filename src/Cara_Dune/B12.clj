@@ -7,8 +7,6 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.java.io]
-   [clojure.string]
-
-   [Cara-Dune.seed]))
+   [clojure.string]))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
