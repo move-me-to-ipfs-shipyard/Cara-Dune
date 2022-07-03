@@ -19,7 +19,7 @@
    [Cara-Dune.raisins]
    [Cara-Dune.B12]
    [Cara-Dune.salt]
-   [Cara-Dune.oats]
+   [Cara-Dune.bread]
    [Cara-Dune.kiwis])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
@@ -88,7 +88,7 @@
    '[Cara-Dune.kiwis]
    '[Cara-Dune.B12]
    '[Cara-Dune.salt]
-   '[Cara-Dune.oats]
+   '[Cara-Dune.bread]
    '[Cara-Dune.raisins]
    '[Cara-Dune.main]
    :reload))
@@ -149,12 +149,12 @@
                         (.setMnemonic \O)
                         (.addActionListener on-menu-item-show-dialog)))
               (.add (doto (JMenuItem.)
-                      (.setText "oats")
+                      (.setText "bread")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_O (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \O)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :oats})
+                                          (put! tabs| {:op :tab :tab-name :bread})
                                           #_(put! menubar| {:op :discover}))))))
               
               (.add (doto (JMenuItem.)
@@ -545,7 +545,7 @@
                tabs {:kiwis (JPanel.)
                      :B12 (JPanel.)
                      :salt (JPanel.)
-                     :oats (JPanel.)
+                     :bread (JPanel.)
                      :raisins (JPanel.)}]
 
            (doto jtabbed-pane
@@ -556,9 +556,9 @@
              (.addTab "kiwis" (:kiwis tabs))
              (.addTab "B12" (:B12 tabs))
              (.addTab "salt" (:salt tabs))
-             (.addTab "oats" (:oats tabs))
+             (.addTab "bread" (:bread tabs))
              (.addTab "raisins" (:raisins tabs))
-             (.setSelectedComponent (:oats tabs)))
+             (.setSelectedComponent (:bread tabs)))
 
            (go
              (loop []
@@ -569,7 +569,7 @@
                       (.setSelectedComponent jtabbed-pane ^JPanel ((:tab-name value) tabs)))))
                  (recur))))
 
-           (Cara-Dune.oats/process {:jpanel-tab (:oats tabs)})
+           (Cara-Dune.bread/process {:jpanel-tab (:bread tabs)})
 
            (settings-process {:jpanel-tab (:B12 tabs)
                               :ops| ops|
@@ -582,12 +582,12 @@
              :gameA gameA
              :stateA stateA})
 
-           (doto ^JPanel (:oats tabs)
+           (doto ^JPanel (:bread tabs)
              (.setLayout (MigLayout. "insets 10"
                                      "[grow,shrink,fill]"
                                      "[grow,shrink,fill]")))
 
-           (.add ^JPanel (:oats tabs) (JTextField. "Word") "id Word, pos 50%-Word.w 50%-Word.h" #_"dock center,width 100 :100%:100%")
+           (.add ^JPanel (:bread tabs) (JTextField. "Word") "id Word, pos 50%-Word.w 50%-Word.h" #_"dock center,width 100 :100%:100%")
 
            (.add jroot-panel jtabbed-pane))
          
