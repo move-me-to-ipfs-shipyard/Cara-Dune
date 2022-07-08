@@ -58,7 +58,7 @@ i will be a question-challenge-course game - i am a game of words and text
     B12 -input number answer
     salt - vegan challenge
     bread - input text answer
-    raisins - random challenge
+    wine - random challenge
     - input number answer 
     - input list answer
     - choose a challenge
