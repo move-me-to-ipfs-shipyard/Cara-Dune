@@ -1,4 +1,4 @@
-(ns Cara-Dune.oats
+(ns Cara-Dune.bread
   (:require
    [clojure.core.async
     :refer [chan put! take! close! offer! to-chan! timeout thread
