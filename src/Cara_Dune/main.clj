@@ -20,7 +20,7 @@
    [Cara-Dune.B12]
    [Cara-Dune.salt]
    [Cara-Dune.bread]
-   [Cara-Dune.kiwis])
+   [Cara-Dune.mandarins])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -85,7 +85,7 @@
 (defn reload
   []
   (require
-   '[Cara-Dune.kiwis]
+   '[Cara-Dune.mandarins]
    '[Cara-Dune.B12]
    '[Cara-Dune.salt]
    '[Cara-Dune.bread]
@@ -113,12 +113,12 @@
               (.setMnemonic \F)
               
               (.add (doto (JMenuItem.)
-                      (.setText "kiwis")
+                      (.setText "mandarins")
                       (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_F (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
                       (.setMnemonic \F)
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :kiwis})
+                                          (put! tabs| {:op :tab :tab-name :mandarins})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -541,7 +541,7 @@
 
          
          (let [jtabbed-pane (JTabbedPane.)
-               tabs {:kiwis (JPanel.)
+               tabs {:mandarins (JPanel.)
                      :B12 (JPanel.)
                      :salt (JPanel.)
                      :bread (JPanel.)
@@ -552,7 +552,7 @@
              (.setUI (proxy [BasicTabbedPaneUI] []
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
-             (.addTab "kiwis" (:kiwis tabs))
+             (.addTab "mandarins" (:mandarins tabs))
              (.addTab "B12" (:B12 tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "bread" (:bread tabs))
@@ -575,7 +575,7 @@
                               :settingsA settingsA})
 
            (discover-process
-            {:jpanel-tab (:kiwis tabs)
+            {:jpanel-tab (:mandarins tabs)
              :ops| ops|
              :gamesA gamesA
              :gameA gameA
