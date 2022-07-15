@@ -1,4 +1,4 @@
-(ns Cara-Dune.mandarins
+(ns Cara-Dune.kiwis
   (:require
    [clojure.core.async
     :refer [chan put! take! close! offer! to-chan! timeout thread
