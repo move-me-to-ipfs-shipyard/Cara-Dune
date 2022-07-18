@@ -17,7 +17,6 @@
    [taoensso.timbre]
 
    [Cara-Dune.raisins]
-   [Cara-Dune.grapefruit]
    [Cara-Dune.B12]
    [Cara-Dune.salt]
    [Cara-Dune.bread]
@@ -87,7 +86,6 @@
   []
   (require
    '[Cara-Dune.mandarins]
-   '[Cara-Dune.grapefruit]
    '[Cara-Dune.B12]
    '[Cara-Dune.salt]
    '[Cara-Dune.bread]
@@ -121,15 +119,6 @@
                       (.addActionListener
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :mandarins})
-                                          #_(put! menubar| {:op :game}))))))
-              
-              (.add (doto (JMenuItem.)
-                      (.setText "grapefruit")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_F (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \F)
-                      (.addActionListener
-                       (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :grapefruit})
                                           #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
@@ -553,7 +542,6 @@
          
          (let [jtabbed-pane (JTabbedPane.)
                tabs {:mandarins (JPanel.)
-                     :grapefruit (JPanel.)
                      :B12 (JPanel.)
                      :salt (JPanel.)
                      :bread (JPanel.)
@@ -565,7 +553,6 @@
                        (calculateTabAreaHeight [tab-placement run-count max-tab-height]
                          (int 0))))
              (.addTab "mandarins" (:mandarins tabs))
-             (.addTab "grapefruit" (:grapefruit tabs))
              (.addTab "B12" (:B12 tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "bread" (:bread tabs))
