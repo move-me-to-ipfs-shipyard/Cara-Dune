@@ -16,13 +16,12 @@
    [datahike.api]
    [taoensso.timbre]
 
-   [Cara-Dune.mandarins]
+   [Cara-Dune.raisins]
    [Cara-Dune.grapefruit]
    [Cara-Dune.B12]
    [Cara-Dune.salt]
    [Cara-Dune.bread]
-   [Cara-Dune.water]
-   [Cara-Dune.raisins])
+   [Cara-Dune.mandarins])
   (:import
    (javax.swing JFrame WindowConstants JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
    (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
@@ -92,7 +91,6 @@
    '[Cara-Dune.B12]
    '[Cara-Dune.salt]
    '[Cara-Dune.bread]
-   '[Cara-Dune.water]
    '[Cara-Dune.raisins]
    '[Cara-Dune.main]
    :reload))
@@ -169,15 +167,6 @@
                        (on-menubar-item (fn [_ event]
                                           (put! tabs| {:op :tab :tab-name :bread})
                                           #_(put! menubar| {:op :discover}))))))
-              
-              (.add (doto (JMenuItem.)
-                      (.setText "water")
-                      (.setAccelerator (KeyStroke/getKeyStroke KeyEvent/VK_W (-> (Toolkit/getDefaultToolkit) (.getMenuShortcutKeyMask))))
-                      (.setMnemonic \W)
-                      (.addActionListener
-                       (on-menubar-item (fn [_ event]
-                                          (put! tabs| {:op :tab :tab-name :water})
-                                          #_(put! menubar| {:op :game}))))))
               
               (.add (doto (JMenuItem.)
                       (.setText "raisins")
@@ -568,7 +557,6 @@
                      :B12 (JPanel.)
                      :salt (JPanel.)
                      :bread (JPanel.)
-                     :water (JPanel.)
                      :raisins (JPanel.)}]
 
            (doto jtabbed-pane
@@ -581,7 +569,6 @@
              (.addTab "B12" (:B12 tabs))
              (.addTab "salt" (:salt tabs))
              (.addTab "bread" (:bread tabs))
-             (.addTab "water" (:water tabs))
              (.addTab "raisins" (:raisins tabs))
              (.setSelectedComponent (:bread tabs)))
 
