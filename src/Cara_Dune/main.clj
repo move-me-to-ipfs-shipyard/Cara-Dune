@@ -16,7 +16,6 @@
    [datahike.api]
    [taoensso.timbre]
 
-   [Cara-Dune.water]
    [Cara-Dune.raisins]
    [Cara-Dune.B12]
    [Cara-Dune.salt]
@@ -86,7 +85,6 @@
 (defn reload
   []
   (require
-   '[Cara-Dune.water]
    '[Cara-Dune.mandarins]
    '[Cara-Dune.B12]
    '[Cara-Dune.salt]
